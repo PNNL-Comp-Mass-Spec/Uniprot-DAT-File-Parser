@@ -1,6 +1,6 @@
 Option Strict On
 
-' This program uses clsParseIPIDATFile to read an IPI DAT file and create a 
+' This program uses clsParseIPIDATFile to read a Uniprot (IPI) DAT file and create a 
 ' tab-delimited text file with the information split into multiple fields
 '
 ' -------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "February 20, 2007"
+    Public Const PROGRAM_DATE As String = "July 11, 2007"
 
     Private mMaxCharsPerColumn As Integer
     Private mInputDataFilePath As String
@@ -144,7 +144,7 @@ Module modMain
 
         Try
 
-            strSyntax = "This program will read an IPI .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file." & ControlChars.NewLine & ControlChars.NewLine
+            strSyntax = "This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files." & ControlChars.NewLine & ControlChars.NewLine
             strSyntax &= "Program syntax:" & ControlChars.NewLine & ioPath.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location)
             strSyntax &= " InputFileName.dat [/M:MaximumCharsPerColumn]" & ControlChars.NewLine & ControlChars.NewLine
 

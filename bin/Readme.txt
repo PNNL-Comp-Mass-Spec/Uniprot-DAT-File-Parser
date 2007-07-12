@@ -1,23 +1,26 @@
-This program can read an IPI .Dat file and parse out the information
-for each entry, creating a tab delimited text file.  IPI .Dat files
-can be obtained from EBI at:
+This program can read a Uniprot (IPI) .Dat file and parse out the 
+information for each entry, creating a tab delimited text file.  
+Uniprot .Dat files can be obtained from EBI at:
  ftp://ftp.ebi.ac.uk/pub/databases/IPI/current/ and 
  ftp://ftp.ebi.ac.uk/pub/databases/IPI/old/
+
+See also http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently
+asked questions concerning Uniprot files.
 
 This program must be run from the command line.  To use, first
 download the .Dat file from EBI. If the filename ends in .gz then you
 need to first unzip the file (use 7-Zip, WinZip, or WinRar).  Next, 
-place the Parse_IPI_Dat_File.exe file in the same folder as the .Dat 
+place theUniprot_DAT_File_Parser.exe file in the same folder as the .Dat 
 file.  Now go to the command prompt, change the directory to the folder
 with the files, and enter the command:
-  Parse_IPI_Dat_File.exe Inputfile.Dat
+  Uniprot_DAT_File_Parser.exe Inputfile.Dat
 
 You can optionally limit the maximum characters to retain for each column 
 using the /M switch, like this:
-  Parse_IPI_Dat_File.exe Inputfile.Dat /M:200
+  Uniprot_DAT_File_Parser.exe Inputfile.Dat /M:200
 
 -------------------------------------------------------------------------------
-Written by Matthew Monroe and Nikola Tolic for the Department of Energy (PNNL, Richland, WA)
+Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 Copyright 2007, Battelle Memorial Institute.  All Rights Reserved.
 
 E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
