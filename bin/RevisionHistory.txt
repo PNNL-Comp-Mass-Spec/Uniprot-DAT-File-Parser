@@ -1,7 +1,7 @@
 Parse IPI Dat File Revision History
 
 Version 1.0.2748; July 11, 2007
-	- Renamed program from Parse_IPI_Dat_File.exe to Uniprot_DAT_File_Parser.exe
+	- Renamed program from Parse_IPI_Dat_File.exe to UniprotDATFileParser.exe
 
 Version 1.0.2607; February 20, 2007
 	- Added command line switch /M which can be used to specify the maximum characters to retain for each column

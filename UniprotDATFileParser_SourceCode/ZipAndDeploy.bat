@@ -10,7 +10,7 @@ rem 5. Copy this file to the final folder
 rem 6. Create the zipped installer file
 rem 7. Copy the zipped installer file to the final folder
 
-Set ProgramName=Uniprot_DAT_File_Parser
+Set ProgramName=UniprotDATFileParser
 Set DistributionFolderBase=D:\Public\Software
 
 Set SourceCodeFolder=%ProgramName%_SourceCode

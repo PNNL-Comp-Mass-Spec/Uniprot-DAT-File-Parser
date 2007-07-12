@@ -3,7 +3,7 @@
 "VSVersion" = "3:701"
 "ProjectType" = "8:{2C2AF0D9-9B47-4FE5-BEF2-169778172667}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:Uniprot_DAT_File_Parser_Installer"
+"ProjectName" = "8:UniprotDATFileParser_Installer"
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
@@ -15,37 +15,37 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_63F966FE0C294BE0A5A5573FE6F3F881"
+        "MsmKey" = "8:_025248C80F174164B157C8D1D59FC17B"
+        "OwnerKey" = "8:_94D6192E461144FBBD64486C890EDDE4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_94D6192E461144FBBD64486C890EDDE4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6E70FCF20A9241AFA2B0A699DD365B6D"
+        "MsmKey" = "8:_9A135F92640F49FF96AEA8F24921E85F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A881A5A973F940D3862CDBDA136DF937"
+        "MsmKey" = "8:_F316B95DD4634EF9A823E6F40FD2EABF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C2851F9B843E4A539BD7A4EFBB51E2E9"
+        "MsmKey" = "8:_FD14C4F837EB46938121DDC9941DF1E2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_DC9233921AB6442C9E26B371C2BFCF29"
-        "OwnerKey" = "8:_C2851F9B843E4A539BD7A4EFBB51E2E9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F58173C8C6E2406CBB4A70E884D5AC6D"
+        "MsmKey" = "8:_FE7985E8192A4E2790B1EE712E40F76B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -57,7 +57,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\Uniprot_DAT_File_Parser_Installer.msi"
+        "OutputFilename" = "8:Debug\\UniprotDATFileParser_Installer.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -73,7 +73,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Uniprot_DAT_File_Parser_Installer.msi"
+        "OutputFilename" = "8:Release\\UniprotDATFileParser_Installer.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -114,7 +114,7 @@
         }
         "File"
         {
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_63F966FE0C294BE0A5A5573FE6F3F881"
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_9A135F92640F49FF96AEA8F24921E85F"
             {
             "SourcePath" = "8:..\\bin\\RevisionHistory.txt"
             "TargetName" = "8:RevisionHistory.txt"
@@ -134,27 +134,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_6E70FCF20A9241AFA2B0A699DD365B6D"
-            {
-            "SourcePath" = "8:..\\bin\\ipi.HUMAN.v3.20_Excerpt.dat"
-            "TargetName" = "8:ipi.HUMAN.v3.20_Excerpt.dat"
-            "Tag" = "8:"
-            "Folder" = "8:_9FFA67E7EE394E29AAE15498DFBF066D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_A881A5A973F940D3862CDBDA136DF937"
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_F316B95DD4634EF9A823E6F40FD2EABF"
             {
             "SourcePath" = "8:..\\bin\\Readme.txt"
             "TargetName" = "8:Readme.txt"
@@ -174,7 +154,27 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_F58173C8C6E2406CBB4A70E884D5AC6D"
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_FD14C4F837EB46938121DDC9941DF1E2"
+            {
+            "SourcePath" = "8:..\\bin\\ipi.HUMAN.v3.20_Excerpt.dat"
+            "TargetName" = "8:ipi.HUMAN.v3.20_Excerpt.dat"
+            "Tag" = "8:"
+            "Folder" = "8:_9FFA67E7EE394E29AAE15498DFBF066D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_FE7985E8192A4E2790B1EE712E40F76B"
             {
             "SourcePath" = "8:..\\bin\\ipi.HUMAN.v3.20_Excerpt_output.txt"
             "TargetName" = "8:ipi.HUMAN.v3.20_Excerpt_output.txt"
@@ -224,7 +224,7 @@
             }
             "{58C0ADA3-3CEA-43BD-A3B3-2EA121BC8217}:_9FFA67E7EE394E29AAE15498DFBF066D"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -261,7 +261,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:UniprotDATFileParser"
         "ProductCode" = "8:{0BA4423F-5552-4F03-8264-B4130E056450}"
-        "PackageCode" = "8:{01209BE4-6AF2-4A44-B4BD-666C7E3E1164}"
+        "PackageCode" = "8:{0B2B9B78-F7A6-4EAA-AC9F-67948C9E3B7D}"
         "UpgradeCode" = "8:{5DD35787-2AB0-45AD-BC5D-9528C19D07BC}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -375,15 +375,15 @@
         }
         "Shortcut"
         {
-            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_71FB31A9E25A43E3A8C1D6A656D9CFB0"
+            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_BB8DB121DB5B49F6B93D0C856E83AF73"
             {
-            "Name" = "8:Uniprot_DAT_File_Parser"
+            "Name" = "8:Uniprot DAT File Parser"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C2851F9B843E4A539BD7A4EFBB51E2E9"
+            "Target" = "8:_94D6192E461144FBBD64486C890EDDE4"
             "Folder" = "8:_8A256FBE4DA645948ADEF596176F588A"
             "WorkingFolder" = "8:_9FFA67E7EE394E29AAE15498DFBF066D"
             "Icon" = "8:"
@@ -772,7 +772,7 @@
         }
         "MergeModule"
         {
-            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_DC9233921AB6442C9E26B371C2BFCF29"
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_025248C80F174164B157C8D1D59FC17B"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -789,9 +789,9 @@
         }
         "ProjectOutput"
         {
-            "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_C2851F9B843E4A539BD7A4EFBB51E2E9"
+            "{8062640A-2EEE-46E9-AB67-688E9A886E9F}:_94D6192E461144FBBD64486C890EDDE4"
             {
-            "SourcePath" = "8:..\\obj\\Release\\Uniprot_DAT_File_Parser.exe"
+            "SourcePath" = "8:..\\obj\\Release\\UniprotDATFileParser.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9FFA67E7EE394E29AAE15498DFBF066D"
