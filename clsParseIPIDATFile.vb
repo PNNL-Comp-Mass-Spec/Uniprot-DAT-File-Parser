@@ -97,7 +97,7 @@ Public Class clsParseIPIDATFile
 
         If strArray Is Nothing Then
             Return String.Empty
-        ElseIf strArray.Length = 0 OrElse intDataCount = 0 Then
+        ElseIf strArray.Length = 0 OrElse intDataCount <= 0 Then
             Return String.Empty
         Else
             If intDataCount > strArray.Length Then
@@ -107,7 +107,7 @@ Public Class clsParseIPIDATFile
             strResult = strArray(0)
             If strResult Is Nothing Then strResult = String.Empty
 
-            For intIndex = 1 To strArray.Length - 1
+            For intIndex = 1 To intDataCount - 1
                 If strArray(intIndex) Is Nothing Then
                     strResult &= chSepChar
                 Else

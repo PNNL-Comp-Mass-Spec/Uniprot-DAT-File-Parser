@@ -25,7 +25,7 @@ Option Strict On
 ' this computer software.
 
 '
-' Last modified February 20, 2007
+' Last modified August 27, 2007
 
 Public Class clsParseCommandLine
 
@@ -102,11 +102,15 @@ Public Class clsParseCommandLine
 
         Dim strCmdLine As String
         Dim strKey As String, strValue As String
+        Dim strValueTrimmed As String
+
         Dim intCharLoc As Integer
         Dim intNonSwitchParameterCount As Integer
 
         Dim intIndex As Integer
         Dim strParameters() As String
+
+        Dim blnSwitchParam As Boolean
 
         mSwitches = New Hashtable
 
@@ -138,21 +142,39 @@ Public Class clsParseCommandLine
             For intIndex = 1 To strParameters.Length - 1
 
                 If strParameters(intIndex).Length > 0 Then
-                    ' Look for strSwitchParameterChar in strParameters(intIndex)
-                    intCharLoc = strParameters(intIndex).IndexOf(strSwitchParameterChar)
+                    ' Note that .NET will strip out the starting and ending double quote if the user provides a parameter like this:
+                    ' MyProgram.exe "C:\Program Files\FileToProcess"
 
                     strKey = strParameters(intIndex)
                     strValue = ""
 
+                    ' Look for strSwitchParameterChar in strParameters(intIndex)
+                    intCharLoc = strParameters(intIndex).IndexOf(strSwitchParameterChar)
+
                     If intCharLoc >= 0 Then
-                        strValue = strKey.Substring(intCharLoc + 1).Trim
+                        If strKey.StartsWith(strSwitchStartChar) Then
+                            blnSwitchParam = True
+                        ElseIf strKey.StartsWith("-"c) OrElse strKey.StartsWith("/"c) Then
+                            blnSwitchParam = True
+                        Else
+                            blnSwitchParam = False
+                        End If
 
-                        ' Remove any starting and ending quotation marks
-                        strValue = strValue.Trim(""""c)
+                        If blnSwitchParam Then
+                            ' Parameter is of the form /I:MyParam or /I:"My Parameter" or -I:"My Parameter" or /MyParam:Setting
+                            strValue = strKey.Substring(intCharLoc + 1).Trim
 
-                        strKey = strKey.Substring(0, intCharLoc)
+                            ' Remove any starting and ending quotation marks
+                            strValue = strValue.Trim(""""c)
 
-                        If strKey.Substring(0, 1) = "-" Or strKey.Substring(0, 1) = "/" Then
+                            strKey = strKey.Substring(0, intCharLoc)
+                        End If
+                    Else
+                        blnSwitchParam = False
+                    End If
+
+                    If blnSwitchParam Then
+                        If strKey.StartsWith(strSwitchStartChar) OrElse strKey.StartsWith("-"c) OrElse strKey.StartsWith("/"c) Then
                             strKey = strKey.Substring(1)
                         End If
                         strKey = strKey.Trim
@@ -160,7 +182,7 @@ Public Class clsParseCommandLine
                         ' Note: .Item() will add strKey if it doesn't exist (which is normally the case)
                         mSwitches.Item(strKey) = strValue
                     Else
-                        ' Non-switch parameter since strSwitchParameterChar was not found
+                        ' Non-switch parameter since strSwitchParameterChar was not found and does not start with strSwitchStartChar
 
                         ' Remove any starting and ending quotation marks
                         strKey = strKey.Trim(""""c)
