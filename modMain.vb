@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "July 11, 2007"
+    Public Const PROGRAM_DATE As String = "August 29, 2007"
 
     Private mMaxCharsPerColumn As Integer
     Private mInputDataFilePath As String
@@ -44,6 +44,7 @@ Module modMain
         Try
             ' Set the default values
             mMaxCharsPerColumn = 0
+            mInputDataFilePath = String.Empty
 
             blnProceed = False
             If objParseCommandLine.ParseCommandLine Then
