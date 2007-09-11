@@ -1,6 +1,6 @@
 Parse IPI Dat File Revision History
 
-Version 1.0.2797; August 27, 2007
+Version 1.0.2797; August 29, 2007
 	- Fixed bug that skipped single letter command line switches, e.g. /Q
 
 Version 1.0.2795; August 27, 2007
