@@ -1,4 +1,4 @@
-Parse IPI Dat File Revision History
+Uniprot DAT File Parser Revision History
 
 Version 1.0.2797; August 29, 2007
 	- Fixed bug that skipped single letter command line switches, e.g. /Q
