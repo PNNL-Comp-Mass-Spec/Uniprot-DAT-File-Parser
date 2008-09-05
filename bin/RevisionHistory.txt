@@ -1,5 +1,10 @@
 Uniprot DAT File Parser Revision History
 
+Version 1.0.3170; September 5, 2008
+	- Added switch /S to enable inclusion of the protein sequence in the tab-delimited output file
+	- Added switch /O to enable inclusion of the organism name and phylogeny information in the tab-delimited output file
+	- Added switch /F to create a .Fasta file of the protein sequences instead of creating a tab-delimited file
+
 Version 1.0.2797; August 29, 2007
 	- Fixed bug that skipped single letter command line switches, e.g. /Q
 

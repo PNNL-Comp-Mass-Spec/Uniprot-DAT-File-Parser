@@ -28,11 +28,15 @@ Option Strict On
 
 Public Class clsParseIPIDATFile
 
+#Region "Constants and Enums"
+
     Private Const DATA_SOURCE_ENSEMBL As String = "ENSEMBL"
     Private Const DATA_SOURCE_ENTREZ As String = "Entrez Gene"
     Private Const DATA_SOURCE_REFSEQ As String = "REFSEQ"
     Private Const DATA_SOURCE_SWISSPROT As String = "UniProtKB/Swiss-Prot"
     Private Const DATA_SOURCE_TREMBL As String = "UniProtKB/TrEMBL"
+
+    Private Const SKIP_COLUMN_FLAG As String = "<<SKIP_COL>>"
 
     Private Enum eTargetColumn
         IPI = 0
@@ -46,17 +50,49 @@ Public Class clsParseIPIDATFile
         EntrezGeneName = 8
         SwissProt = 9
         SwissProtName = 10
-        CHROMOSOME = 11
+        Chromosome = 11
         AACount = 12
         MW = 13
-        IPI1 = 14
-        IPI2 = 15
-        IPI3 = 16
-        IPI4 = 17
-        AddnlColumnStart = 18
+        Organism = 14
+        Phylogeny = 15
+        Sequence = 16
+        IPI1 = 17
+        IPI2 = 18
+        IPI3 = 19
+        IPI4 = 20
+        AddnlColumnStart = 21
     End Enum
 
+#End Region
+
+#Region "Structures"
+
+#End Region
+
+#Region "Classwide Variables"
     Private mShowMessages As Boolean
+    Private mIncludeOrganismAndPhylogeny As Boolean
+    Private mIncludeProteinSequence As Boolean
+    Private mWriteFastaFile As Boolean              ' If this is true, then mIncludeOrganismAndPhylogeny and mIncludeProteinSequence are auto-set to true
+#End Region
+
+#Region "Properties"
+    Public Property IncludeOrganismAndPhylogeny() As Boolean
+        Get
+            Return mIncludeOrganismAndPhylogeny
+        End Get
+        Set(ByVal value As Boolean)
+            mIncludeOrganismAndPhylogeny = value
+        End Set
+    End Property
+    Public Property IncludeProteinSequence() As Boolean
+        Get
+            Return mIncludeProteinSequence
+        End Get
+        Set(ByVal value As Boolean)
+            mIncludeProteinSequence = value
+        End Set
+    End Property
 
     Public Property ShowMessages() As Boolean
         Get
@@ -66,6 +102,16 @@ Public Class clsParseIPIDATFile
             mShowMessages = Value
         End Set
     End Property
+
+    Public Property WriteFastaFile() As Boolean
+        Get
+            Return mWriteFastaFile
+        End Get
+        Set(ByVal value As Boolean)
+            mWriteFastaFile = value
+        End Set
+    End Property
+#End Region
 
     Private Sub AppendToText(ByRef strText As String, ByVal strNewText As String, ByVal strSeparator As String)
         If strNewText Is Nothing Then
@@ -79,6 +125,11 @@ Public Class clsParseIPIDATFile
         End If
     End Sub
 
+    Private Sub ClearArray(ByRef strArray() As String)
+        For intIndex As Integer = 0 To strArray.Length - 1
+            strArray(intIndex) = String.Empty
+        Next
+    End Sub
     Private Function FlattenArray(ByRef strArray() As String) As String
         Return FlattenArray(strArray, ControlChars.Tab)
     End Function
@@ -110,7 +161,7 @@ Public Class clsParseIPIDATFile
             For intIndex = 1 To intDataCount - 1
                 If strArray(intIndex) Is Nothing Then
                     strResult &= chSepChar
-                Else
+                ElseIf strArray(intIndex) <> SKIP_COLUMN_FLAG Then
                     strResult &= chSepChar & strArray(intIndex)
                 End If
             Next intIndex
@@ -120,19 +171,18 @@ Public Class clsParseIPIDATFile
 
     Public Function ParseIPIDATFile(ByVal strInputFileName As String, ByVal intMaxCharsPerColumn As Integer) As Boolean
 
-        Dim strOutputFileName As String
+        Dim strOutputFileName As String = String.Empty
 
         Dim strLineIn As String
-        Dim strName As String
 
         Dim blnDataPresent As Boolean
         Dim strData() As String
 
-        Dim strKey As String, strItem As String
-        Dim strSubKey As String, strSubItem As String
-        Dim strSubKey2 As String, strSubItem2 As String
-        Dim strSubKey3 As String, strSubItem3 As String
-        Dim strSubKey4 As String, strSubItem4 As String
+        Dim strKey As String = String.Empty, strItem As String = String.Empty
+        Dim strSubKey As String = String.Empty, strSubItem As String = String.Empty
+        Dim strSubKey2 As String = String.Empty, strSubItem2 As String = String.Empty
+        Dim strSubKey3 As String = String.Empty, strSubItem3 As String = String.Empty
+        Dim strSubKey4 As String = String.Empty, strSubItem4 As String = String.Empty
 
         Dim intAddnlColumnCount As Integer
         Dim strAddnlColumns() As String
@@ -146,10 +196,11 @@ Public Class clsParseIPIDATFile
         Dim intRowsProcessed As Integer
         Dim intEntryCount As Integer
 
-        Dim blnReadingName As Boolean
-
         Dim srInFile As System.IO.StreamReader
         Dim srOutFile As System.IO.StreamWriter
+
+        Dim sbSequence As System.Text.StringBuilder = New System.Text.StringBuilder
+        Dim blnReadingSequence As Boolean = False
 
         Try
             If Not System.IO.File.Exists(strInputFileName) Then
@@ -159,8 +210,16 @@ Public Class clsParseIPIDATFile
 
             ReportProgress("Reading " & strInputFileName)
 
-            ' Prescan the file
-            PrescanFileForAddnlColumns(strInputFileName, strAddnlColumns, intAddnlColumnCount, intEntryCount)
+            If mWriteFastaFile Then
+                ReDim strAddnlColumns(-1)
+                intAddnlColumnCount = 0
+
+                mIncludeOrganismAndPhylogeny = True
+                mIncludeProteinSequence = True
+            Else
+                ' Prescan the file
+                PrescanFileForAddnlColumns(strInputFileName, strAddnlColumns, intAddnlColumnCount, intEntryCount)
+            End If
 
             If intAddnlColumnCount > 0 Then
                 ' Remove columns from strAddnlColumns() that match the standard columns typically searched for below
@@ -184,7 +243,7 @@ Public Class clsParseIPIDATFile
                     End If
                 Next intIndex
 
-                ' Compresss the array
+                ' Compress the array (copy in place)
                 intIndex = 0
                 For intIndex2 = 0 To intAddnlColumnCount - 1
                     If strAddnlColumns(intIndex2).Length > 0 Then
@@ -196,6 +255,7 @@ Public Class clsParseIPIDATFile
                 Next intIndex2
                 intAddnlColumnCount = intIndex
             End If
+
         Catch ex As Exception
             Console.WriteLine("Error in ParseIPIDataFile (Prescan file): " & ex.Message)
             Exit Function
@@ -210,7 +270,13 @@ Public Class clsParseIPIDATFile
         End Try
 
         Try
-            strOutputFileName = System.IO.Path.GetFileNameWithoutExtension(strInputFileName) & "_output.txt"
+            strOutputFileName = System.IO.Path.GetFileNameWithoutExtension(strInputFileName) & "_output"
+            If mWriteFastaFile Then
+                strOutputFileName &= ".fasta"
+            Else
+                strOutputFileName &= ".txt"
+            End If
+
             srOutFile = New System.IO.StreamWriter(New System.IO.FileStream(strOutputFileName, IO.FileMode.Create, IO.FileAccess.Write, IO.FileShare.Read))
         Catch ex As Exception
             Console.WriteLine("Error opening the output file (" & strOutputFileName & ") in ParseIPIDataFile: " & ex.Message)
@@ -218,34 +284,15 @@ Public Class clsParseIPIDATFile
         End Try
 
         Try
+            If mWriteFastaFile Then
+                ' Writing out a fasta file; no header to write
+            Else
+                ' Writing a tab-delimited file
+                WriteDelimitedFileHeader(srOutFile, intAddnlColumnCount, strAddnlColumns, intMaxCharsPerColumn)
+            End If
 
-            ' Write the header line
             ReDim strData(eTargetColumn.AddnlColumnStart + intAddnlColumnCount)
-
-            strData(eTargetColumn.IPI) = "IPI"
-            strData(eTargetColumn.Accession) = "Accession"
-            strData(eTargetColumn.Description) = "Description"
-            strData(eTargetColumn.REFSEQ_XP_or_NP) = "REFSEQ_XP_or_NP"
-            strData(eTargetColumn.GI) = "GI"
-            strData(eTargetColumn.TREMBL) = "TREMBL"
-            strData(eTargetColumn.ENSEMBL) = "ENSEMBL"
-            strData(eTargetColumn.EntrezGeneID) = "Entrez_GeneID"
-            strData(eTargetColumn.EntrezGeneName) = "Entrez_GeneName"
-            strData(eTargetColumn.SwissProt) = "SwissProt"
-            strData(eTargetColumn.SwissProtName) = "SwissProt_Name"
-            strData(eTargetColumn.CHROMOSOME) = "Chromosome"
-            strData(eTargetColumn.AACount) = "Sequence_AA_Count"
-            strData(eTargetColumn.MW) = "MW"
-            strData(eTargetColumn.IPI1) = "IPI1"
-            strData(eTargetColumn.IPI2) = "IPI2"
-            strData(eTargetColumn.IPI3) = "IPI3"
-            strData(eTargetColumn.IPI4) = "IPI4"
-
-            ' Append the additional column names
-            For intIndex = 0 To intAddnlColumnCount - 1
-                strData(eTargetColumn.AddnlColumnStart + intIndex) = strAddnlColumns(intIndex)
-            Next intIndex
-            WriteData(srOutFile, strData, intMaxCharsPerColumn)
+            ClearArray(strData)
 
             intRowsProcessed = 0
             blnDataPresent = False
@@ -256,9 +303,20 @@ Public Class clsParseIPIDATFile
                     strLineIn = strLineIn.TrimEnd
 
                     If strLineIn = "//" Then
+
+                        blnReadingSequence = False
+                        If mIncludeProteinSequence Then
+                            strData(eTargetColumn.Sequence) = sbSequence.ToString
+                        End If
+
                         ' Write out the previous row
                         If blnDataPresent Then
-                            WriteData(srOutFile, strData, intMaxCharsPerColumn)
+                            If mWriteFastaFile Then
+                                WriteFastaFileEntry(srOutFile, strData)
+                            Else
+                                WriteData(srOutFile, strData, intMaxCharsPerColumn)
+                            End If
+                            ClearArray(strData)
                             blnDataPresent = False
                         End If
 
@@ -266,6 +324,11 @@ Public Class clsParseIPIDATFile
 
                         If intRowsProcessed Mod 1000 = 0 Then
                             ReportProgress("Working: " & intRowsProcessed & " / " & intEntryCount & " entries processed")
+                        End If
+
+                    ElseIf blnReadingSequence Then
+                        If mIncludeProteinSequence Then
+                            sbSequence.Append(strLineIn.Trim.Replace(" "c, String.Empty))
                         End If
                     ElseIf strLineIn.Length > 2 AndAlso Char.IsUpper(strLineIn.Chars(0)) AndAlso Char.IsUpper(strLineIn.Chars(1)) Then
 
@@ -394,7 +457,7 @@ Public Class clsParseIPIDATFile
                                     If SplitLine(strItem, strSubKey, strSubItem, ":") Then
                                         If strSubKey = "-!- CHROMOSOME" Then
                                             strSubItem = strSubItem.TrimEnd("."c)
-                                            strData(eTargetColumn.CHROMOSOME) = String.Copy(strSubItem)
+                                            strData(eTargetColumn.Chromosome) = String.Copy(strSubItem)
                                             blnDataPresent = True
                                         End If
                                     End If
@@ -417,6 +480,27 @@ Public Class clsParseIPIDATFile
                                         End If
                                     End If
 
+                                    sbSequence.Length = 0
+                                    blnReadingSequence = True
+
+                                Case "OS"
+                                    If mIncludeOrganismAndPhylogeny Then
+                                        ' Organism lines tend to end in a period; remove it if found
+                                        strItem = TrimEnd(strItem, ".")
+
+                                        AppendToText(strData(eTargetColumn.Organism), strItem, " ")
+                                        blnDataPresent = True
+                                    Else
+                                        strData(eTargetColumn.Organism) = SKIP_COLUMN_FLAG
+                                    End If
+
+                                Case "OC"
+                                    If mIncludeOrganismAndPhylogeny Then
+                                        AppendToText(strData(eTargetColumn.Phylogeny), strItem, " ")
+                                        blnDataPresent = True
+                                    Else
+                                        strData(eTargetColumn.Phylogeny) = SKIP_COLUMN_FLAG
+                                    End If
                                 Case Else
                             End Select
                         End If
@@ -425,8 +509,22 @@ Public Class clsParseIPIDATFile
             Loop
 
             If blnDataPresent Then
-                WriteData(srOutFile, strData, intMaxCharsPerColumn)
-                blnDataPresent = False
+                blnReadingSequence = False
+                If mIncludeProteinSequence Then
+                    strData(eTargetColumn.Sequence) = sbSequence.ToString
+                End If
+
+                ' Write out the previous row
+                If blnDataPresent Then
+                    If mWriteFastaFile Then
+                        WriteFastaFileEntry(srOutFile, strData)
+                    Else
+                        WriteData(srOutFile, strData, intMaxCharsPerColumn)
+                    End If
+                    ClearArray(strData)
+                    blnDataPresent = False
+                End If
+
             End If
 
         Catch ex As Exception
@@ -444,14 +542,11 @@ Public Class clsParseIPIDATFile
         Dim srInFile As System.IO.StreamReader
 
         Dim strLineIn As String
-        Dim strKey As String
-        Dim strSubKey As String
+        Dim strKey As String = String.Empty
+        Dim strSubKey As String = String.Empty
 
-        Dim strItem As String
-        Dim strSubItem As String
-
-        Dim intIndex As Integer
-        Dim intIndex2 As Integer
+        Dim strItem As String = String.Empty
+        Dim strSubItem As String = String.Empty
 
         Try
             intAddnlColumnCount = 0
@@ -573,9 +668,99 @@ Public Class clsParseIPIDATFile
         End If
 
         srOutFile.WriteLine(FlattenArray(strData))
+    End Sub
 
-        For intIndex = 0 To strData.Length - 1
-            strData(intIndex) = String.Empty
-        Next
+    Private Sub WriteDelimitedFileHeader(ByRef srOutFile As System.IO.StreamWriter, _
+                                         ByRef intAddnlColumnCount As Integer, _
+                                         ByRef strAddnlColumns() As String, _
+                                         ByRef intMaxCharsPerColumn As Integer)
+
+        Dim intIndex As Integer
+        Dim strData() As String
+
+        ' Write the header line
+        ReDim strData(eTargetColumn.AddnlColumnStart + intAddnlColumnCount)
+
+        strData(eTargetColumn.IPI) = "IPI"
+        strData(eTargetColumn.Accession) = "Accession"
+        strData(eTargetColumn.Description) = "Description"
+        strData(eTargetColumn.REFSEQ_XP_or_NP) = "REFSEQ_XP_or_NP"
+        strData(eTargetColumn.GI) = "GI"
+        strData(eTargetColumn.TREMBL) = "TREMBL"
+        strData(eTargetColumn.ENSEMBL) = "ENSEMBL"
+        strData(eTargetColumn.EntrezGeneID) = "Entrez_GeneID"
+        strData(eTargetColumn.EntrezGeneName) = "Entrez_GeneName"
+        strData(eTargetColumn.SwissProt) = "SwissProt"
+        strData(eTargetColumn.SwissProtName) = "SwissProt_Name"
+        strData(eTargetColumn.Chromosome) = "Chromosome"
+        strData(eTargetColumn.AACount) = "Sequence_AA_Count"
+        strData(eTargetColumn.MW) = "MW"
+        strData(eTargetColumn.IPI1) = "IPI1"
+        strData(eTargetColumn.IPI2) = "IPI2"
+        strData(eTargetColumn.IPI3) = "IPI3"
+        strData(eTargetColumn.IPI4) = "IPI4"
+
+        If mIncludeOrganismAndPhylogeny Then
+            strData(eTargetColumn.Organism) = "Organism"
+            strData(eTargetColumn.Phylogeny) = "Phylogeny"
+        Else
+            strData(eTargetColumn.Organism) = SKIP_COLUMN_FLAG
+            strData(eTargetColumn.Phylogeny) = SKIP_COLUMN_FLAG
+        End If
+
+        If mIncludeProteinSequence Then
+            strData(eTargetColumn.Sequence) = "Sequence"
+        Else
+            strData(eTargetColumn.Sequence) = SKIP_COLUMN_FLAG
+        End If
+
+        ' Append the additional column names
+        For intIndex = 0 To intAddnlColumnCount - 1
+            strData(eTargetColumn.AddnlColumnStart + intIndex) = strAddnlColumns(intIndex)
+        Next intIndex
+        WriteData(srOutFile, strData, intMaxCharsPerColumn)
+
+    End Sub
+
+    Private Sub WriteFastaFileEntry(ByRef srOutFile As System.IO.StreamWriter, ByRef strData() As String)
+
+        Const RESIDUES_PER_LINE As Integer = 60
+
+        Dim strProteinName As String
+        Dim strProteinDescription As String
+
+        Dim intStartIndex As Integer
+        Dim intLength As Integer
+
+        If Not strData(eTargetColumn.IPI) Is Nothing AndAlso Not strData(eTargetColumn.Sequence) Is Nothing Then
+            strProteinName = strData(eTargetColumn.IPI)
+
+            If strData(eTargetColumn.Description) Is Nothing Then
+                strProteinDescription = String.Empty
+            Else
+                strProteinDescription = TrimEnd(strData(eTargetColumn.Description), ".")
+            End If
+
+            If Not strData(eTargetColumn.Organism) Is Nothing Then
+                strProteinDescription &= " [" & strData(eTargetColumn.Organism) & "]"
+            End If
+
+            srOutFile.WriteLine(">" & strProteinName & " " & strProteinDescription)
+
+            ' Now write out the residues
+            intStartIndex = 0
+            intLength = strData(eTargetColumn.Sequence).Length
+            Do While intStartIndex < intLength
+                If intStartIndex + RESIDUES_PER_LINE <= intLength Then
+                    srOutFile.WriteLine(strData(eTargetColumn.Sequence).Substring(intStartIndex, RESIDUES_PER_LINE))
+                Else
+                    srOutFile.WriteLine(strData(eTargetColumn.Sequence).Substring(intStartIndex))
+                End If
+                intStartIndex += RESIDUES_PER_LINE
+            Loop
+
+        End If
+
+
     End Sub
 End Class

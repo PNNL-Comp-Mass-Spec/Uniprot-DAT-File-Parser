@@ -27,10 +27,15 @@ Option Strict On
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "August 29, 2007"
+    Public Const PROGRAM_DATE As String = "September 5, 2008"
 
     Private mMaxCharsPerColumn As Integer
     Private mInputDataFilePath As String
+
+    Private mIncludeOrganismAndPhylogeny As Boolean
+    Private mIncludeProteinSequence As Boolean
+    Private mWriteFastaFile As Boolean
+
     Private mQuietMode As Boolean
 
     Public Sub Main()
@@ -45,6 +50,9 @@ Module modMain
             ' Set the default values
             mMaxCharsPerColumn = 0
             mInputDataFilePath = String.Empty
+            mIncludeOrganismAndPhylogeny = False
+            mIncludeProteinSequence = False
+            mWriteFastaFile = False
 
             blnProceed = False
             If objParseCommandLine.ParseCommandLine Then
@@ -61,6 +69,9 @@ Module modMain
 
                 With objParseIPIDATFile
                     .ShowMessages = Not mQuietMode
+                    .IncludeOrganismAndPhylogeny = mIncludeOrganismAndPhylogeny
+                    .IncludeProteinSequence = mIncludeProteinSequence
+                    .WriteFastaFile = mWriteFastaFile
 
                     ''If Not mParameterFilePath Is Nothing AndAlso mParameterFilePath.Length > 0 Then
                     ''    .LoadParameterFileSettings(mParameterFilePath)
@@ -81,7 +92,7 @@ Module modMain
             If mQuietMode Then
                 Throw ex
             Else
-                MsgBox("Error occurred: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OKOnly, "Error")
+                MsgBox("Error occurred: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Error")
             End If
             intReturnCode = -1
         End Try
@@ -91,8 +102,8 @@ Module modMain
     Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
         ' Returns True if no problems; otherwise, returns false
 
-        Dim strValue As String
-        Dim strValidParameters() As String = New String() {"I", "M", "Q"}
+        Dim strValue As String = String.Empty
+        Dim strValidParameters() As String = New String() {"I", "M", "S", "O", "F", "Q"}
 
         Try
             ' Make sure no invalid parameters are present
@@ -122,6 +133,11 @@ Module modMain
                             ' Ignore errors here
                         End Try
                     End If
+
+                    If .RetrieveValueForParameter("O", strValue) Then mIncludeOrganismAndPhylogeny = True
+                    If .RetrieveValueForParameter("S", strValue) Then mIncludeProteinSequence = True
+                    If .RetrieveValueForParameter("F", strValue) Then mWriteFastaFile = True
+
                     If .RetrieveValueForParameter("Q", strValue) Then mQuietMode = True
                 End With
 
@@ -132,7 +148,7 @@ Module modMain
             If mQuietMode Then
                 Throw New System.Exception("Error parsing the command line parameters", ex)
             Else
-                MsgBox("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OKOnly, "Error")
+                MsgBox("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Error")
             End If
         End Try
 
@@ -141,16 +157,19 @@ Module modMain
     Private Sub ShowProgramHelp()
 
         Dim strSyntax As String
-        Dim ioPath As System.IO.Path
 
         Try
 
             strSyntax = "This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files." & ControlChars.NewLine & ControlChars.NewLine
-            strSyntax &= "Program syntax:" & ControlChars.NewLine & ioPath.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            strSyntax &= " InputFileName.dat [/M:MaximumCharsPerColumn]" & ControlChars.NewLine & ControlChars.NewLine
+            strSyntax &= "Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+            strSyntax &= " InputFileName.dat [/M:MaximumCharsPerColumn] /S /O /F" & ControlChars.NewLine & ControlChars.NewLine
 
             strSyntax &= "The input file name is required. If the filename contains spaces, then surround it with double quotes. " & _
                          "Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file." & ControlChars.NewLine & ControlChars.NewLine
+
+            strSyntax &= "Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information." & ControlChars.NewLine & ControlChars.NewLine
+
+            strSyntax &= "Use /F to specify that a .Fasta file be created for the proteins." & ControlChars.NewLine & ControlChars.NewLine
 
             strSyntax &= "Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007" & ControlChars.NewLine
             strSyntax &= "Copyright 2007, Battelle Memorial Institute.  All Rights Reserved." & ControlChars.NewLine & ControlChars.NewLine
@@ -165,46 +184,5 @@ Module modMain
         End Try
 
     End Sub
-
-
-    ''Private Function ParseCommandLine(Optional ByVal strSwitchStartChar As Char = "/"c) As String
-    ''    ' Parses the command line, returning the filename specified (which is the argument that doesn't start with strSwitchStartChar)e
-    ''    Dim strCmdLine As String
-
-    ''    Dim strKey As String, strValue As String
-    ''    Dim intCharLoc As Integer
-
-    ''    Dim intIndex As Integer
-    ''    Dim strParameters() As String
-
-    ''    Try
-    ''        Try
-    ''            ' This command will fail if the program is called from a network share
-    ''            strCmdLine = System.Environment.CommandLine()
-    ''            strParameters = System.Environment.GetCommandLineArgs()
-    ''        Catch ex As System.Exception
-    ''            Windows.Forms.MessageBox.Show("This program cannot be run from a network share.  Please map a drive to the network share you are currently accessing or copy the program files and required DLL's to your local computer.", "Error", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Exclamation)
-    ''        End Try
-
-    ''        If strCmdLine Is Nothing OrElse strCmdLine.Length = 0 Then
-    ''            Return String.Empty
-    ''        ElseIf strCmdLine.IndexOf(strSwitchStartChar & "?") > 0 Or strCmdLine.ToLower.IndexOf(strSwitchStartChar & "help") > 0 Then
-    ''            Return String.Empty
-    ''        End If
-
-    ''        ' Note that strParameters(0) is the path to the Executable for the calling program
-
-    ''        If strParameters.Length > 1 Then
-    ''            Return strParameters(1)
-    ''        Else
-    ''            Return String.Empty
-    ''        End If
-
-    ''    Catch ex As System.Exception
-    ''        Throw New System.Exception("Error in ParseCommandLine", ex)
-    ''    End Try
-
-    ''End Function
-
 
 End Module
