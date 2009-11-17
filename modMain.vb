@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "September 5, 2008"
+    Public Const PROGRAM_DATE As String = "August 6, 2009"
 
     Private mMaxCharsPerColumn As Integer
     Private mInputDataFilePath As String
@@ -92,7 +92,7 @@ Module modMain
             If mQuietMode Then
                 Throw ex
             Else
-                MsgBox("Error occurred: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Error")
+                Console.WriteLine("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
             End If
             intReturnCode = -1
         End Try
@@ -113,18 +113,13 @@ Module modMain
 
                 ' Query objParseCommandLine to see if various parameters are present
                 With objParseCommandLine
-                    If .RetrieveValueForParameter("I", strValue) Then
-                        mInputDataFilePath = strValue
 
-                        ' Uncomment this to allow an ouptut file name
-                        ' If .RetrieveValueForParameter("O", strValue) Then mOutputFileOrFolderPath = strValue
-                    Else
-                        ' User didn't use /I:InputFile
-                        ' See if they simply provided the file name
-                        If .NonSwitchParameterCount > 0 Then
-                            mInputDataFilePath = .RetrieveNonSwitchParameter(0)
-                        End If
+                    If .NonSwitchParameterCount > 0 Then
+                        ' Treat the first non-switch parameter as the input file
+                        mInputDataFilePath = .RetrieveNonSwitchParameter(0)
                     End If
+
+                    If .RetrieveValueForParameter("I", strValue) Then mInputDataFilePath = strValue
 
                     If .RetrieveValueForParameter("M", strValue) Then
                         Try
@@ -148,7 +143,7 @@ Module modMain
             If mQuietMode Then
                 Throw New System.Exception("Error parsing the command line parameters", ex)
             Else
-                MsgBox("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message, MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Error")
+                Console.WriteLine("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message)
             End If
         End Try
 
@@ -156,28 +151,34 @@ Module modMain
 
     Private Sub ShowProgramHelp()
 
-        Dim strSyntax As String
-
         Try
 
-            strSyntax = "This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files." & ControlChars.NewLine & ControlChars.NewLine
-            strSyntax &= "Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            strSyntax &= " InputFileName.dat [/M:MaximumCharsPerColumn] /S /O /F" & ControlChars.NewLine & ControlChars.NewLine
+            Console.WriteLine("This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files.")
+            Console.WriteLine()
 
-            strSyntax &= "The input file name is required. If the filename contains spaces, then surround it with double quotes. " & _
-                         "Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file." & ControlChars.NewLine & ControlChars.NewLine
+            Console.WriteLine("Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+                              " InputFileName.dat [/M:MaximumCharsPerColumn] /S /O /F")
+            Console.WriteLine()
 
-            strSyntax &= "Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information." & ControlChars.NewLine & ControlChars.NewLine
+            Console.WriteLine("The input file name is required. If the filename contains spaces, then surround it with double quotes. ")
+            Console.WriteLine("Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file.")
+            Console.WriteLine()
 
-            strSyntax &= "Use /F to specify that a .Fasta file be created for the proteins." & ControlChars.NewLine & ControlChars.NewLine
+            Console.WriteLine("Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information.")
+            Console.WriteLine()
 
-            strSyntax &= "Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007" & ControlChars.NewLine
-            strSyntax &= "Copyright 2007, Battelle Memorial Institute.  All Rights Reserved." & ControlChars.NewLine & ControlChars.NewLine
+            Console.WriteLine("Use /F to specify that a .Fasta file be created for the proteins.")
+            Console.WriteLine()
 
-            strSyntax &= "E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com" & ControlChars.NewLine
-            strSyntax &= "Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/"
+            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007")
+            Console.WriteLine()
 
-            Console.WriteLine(strSyntax)
+            Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")
+            Console.WriteLine("Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/")
+            Console.WriteLine()
+
+            ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
+            System.Threading.Thread.Sleep(750)
 
         Catch ex As System.Exception
             Console.WriteLine("Error displaying the program syntax: " & ex.Message)
