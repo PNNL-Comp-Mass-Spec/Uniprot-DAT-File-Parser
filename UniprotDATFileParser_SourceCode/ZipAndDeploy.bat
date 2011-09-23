@@ -19,7 +19,7 @@ Set SourceAndSupportingDLLsFile=%ProgramName%_SourceAndSupportingDLLs.zip
 
 Set ZippedInstallerFile=%ProgramName%_Installer.zip
 
-Set InstallerFolder=%ProgramName%_Installer\Release
+Set InstallerFolder=%ProgramName%_Installer\Debug
 Set DistributionFolderFinal=%DistributionFolderBase%\%ProgramName%
 
 echo.

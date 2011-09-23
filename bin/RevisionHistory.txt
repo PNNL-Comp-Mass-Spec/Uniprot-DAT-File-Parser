@@ -1,5 +1,10 @@
 Uniprot DAT File Parser Revision History
 
+Version 1.1.4282; September 22, 2011
+	- Now including Accession numbers in the protein description
+	- Now auto-removing "RecName: Full="
+	- Updated to Visual Studio 2010 and .NET 4
+
 Version 1.0.3608; November 17, 2009
 	- Updated to Visual Studio 2008
 	- Added 750 msec delay when showing syntax at the command line
