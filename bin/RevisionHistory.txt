@@ -1,7 +1,14 @@
 Uniprot DAT File Parser Revision History
 
 Version 1.1.4511; May 8, 2012
-	- Updated to support Ensembl being mixed-case (used to be all uppercase)
+	- Now splitting out Ensembl entries into three columns
+		- Ensembl_Transcript
+		- Ensembl_Protein
+		- Ensembl_Gene
+	- Renamed several columns
+		- IPI is now Protein_Name
+		- IPI1 through IPI4 are now Accession1 through Accession4
+	- Now creating a Column Summary file listing the column names and maximum characters per column
 
 Version 1.1.4282; September 22, 2011
 	- Now including Accession numbers in the protein description
