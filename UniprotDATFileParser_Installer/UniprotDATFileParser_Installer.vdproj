@@ -146,7 +146,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:3.5.21022"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 "SupportedRuntimes" = "8:1.1.4322"
@@ -303,7 +303,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:UniprotDATFileParser"
         "ProductCode" = "8:{2B1D2830-9191-4E92-B5E3-75CE36F818B5}"
-        "PackageCode" = "8:{D2992D72-52E1-418E-9641-3552DF0B6027}"
+        "PackageCode" = "8:{DEBCFFA3-DEE3-43E0-9C6C-CE0007660927}"
         "UpgradeCode" = "8:{5DD35787-2AB0-45AD-BC5D-9528C19D07BC}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

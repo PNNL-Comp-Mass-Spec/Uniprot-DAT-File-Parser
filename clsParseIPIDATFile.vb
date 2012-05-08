@@ -297,8 +297,8 @@ Public Class clsParseIPIDATFile
 
             intRowsProcessed = 0
             blnDataPresent = False
-            Do While srInFile.Peek >= 0
-                strLineIn = srInFile.ReadLine
+			Do While srInFile.Peek > -1
+				strLineIn = srInFile.ReadLine
 
 				If Not String.IsNullOrEmpty(strLineIn) Then
 					strLineIn = strLineIn.TrimEnd
@@ -397,8 +397,8 @@ Public Class clsParseIPIDATFile
 											blnDataPresent = True
 										Else
 
-											Select Case strSubKey
-												Case DATA_SOURCE_TREMBL
+											Select Case strSubKey.ToUpper()
+												Case DATA_SOURCE_TREMBL.ToUpper()
 													strSubItem = TrimEnd(strSubItem, "; M.")
 													strSubItem = TrimEnd(strSubItem, "; -.")
 
@@ -409,13 +409,13 @@ Public Class clsParseIPIDATFile
 													End If
 													blnDataPresent = True
 
-												Case DATA_SOURCE_ENSEMBL
+												Case DATA_SOURCE_ENSEMBL.ToUpper()
 													strSubItem = TrimEnd(strSubItem, "; M.")
 													strSubItem = TrimEnd(strSubItem, "; -.")
 													AppendToText(strData(eTargetColumn.ENSEMBL), strSubItem, "; ")
 													blnDataPresent = True
 
-												Case DATA_SOURCE_ENTREZ
+												Case DATA_SOURCE_ENTREZ.ToUpper()
 													If SplitLine(strSubItem, strSubKey2, strSubItem2, ";") Then
 														AppendToText(strData(eTargetColumn.EntrezGeneID), strSubKey2, "; ")
 
@@ -429,7 +429,7 @@ Public Class clsParseIPIDATFile
 													End If
 													blnDataPresent = True
 
-												Case DATA_SOURCE_SWISSPROT
+												Case DATA_SOURCE_SWISSPROT.ToUpper()
 													If SplitLine(strSubItem, strSubKey2, strSubItem2, ";") Then
 														AppendToText(strData(eTargetColumn.SwissProt), strSubKey2, "; ")
 
@@ -512,7 +512,7 @@ Public Class clsParseIPIDATFile
 						End If
 					End If
 				End If
-            Loop
+			Loop
 
             If blnDataPresent Then
                 blnReadingSequence = False
@@ -545,9 +545,7 @@ Public Class clsParseIPIDATFile
 
     Private Sub PrescanFileForAddnlColumns(ByVal strFilePath As String, ByRef strAddnlColumns() As String, ByRef intAddnlColumnCount As Integer, ByRef intEntryCount As Integer)
 
-        Dim srInFile As System.IO.StreamReader
-
-        Dim strLineIn As String
+		Dim strLineIn As String
         Dim strKey As String = String.Empty
         Dim strSubKey As String = String.Empty
 
@@ -562,60 +560,60 @@ Public Class clsParseIPIDATFile
 
             ReportProgress("Pre-scanning file to find additional references")
 
-            srInFile = New System.IO.StreamReader(New System.IO.FileStream(strFilePath, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read))
+			Using srInFile As System.IO.StreamReader = New System.IO.StreamReader(New System.IO.FileStream(strFilePath, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read))
 
-            Do While srInFile.Peek >= 0
-                strLineIn = srInFile.ReadLine
+				Do While srInFile.Peek > -1
+					strLineIn = srInFile.ReadLine
 
-				If Not String.IsNullOrEmpty(strLineIn) Then
-					strLineIn = strLineIn.TrimEnd
+					If Not String.IsNullOrEmpty(strLineIn) Then
+						strLineIn = strLineIn.TrimEnd
 
-					If strLineIn = "//" Then
-						intEntryCount += 1
+						If strLineIn = "//" Then
+							intEntryCount += 1
 
-						If intEntryCount Mod 1000 = 0 Then
-							ReportProgress("Pre-scanning: " & intEntryCount & " rows read")
-						End If
+							If intEntryCount Mod 1000 = 0 Then
+								ReportProgress("Pre-scanning: " & intEntryCount & " rows read")
+							End If
 
-					ElseIf strLineIn.Length > 2 AndAlso Char.IsUpper(strLineIn.Chars(0)) AndAlso Char.IsUpper(strLineIn.Chars(1)) Then
+						ElseIf strLineIn.Length > 2 AndAlso Char.IsUpper(strLineIn.Chars(0)) AndAlso Char.IsUpper(strLineIn.Chars(1)) Then
 
-						If SplitLine(strLineIn, strKey, strItem) Then
-							If strKey.StartsWith("DR") Then
-								If SplitLine(strItem, strSubKey, strSubItem, ";") Then
-									If Array.BinarySearch(strAddnlColumns, 0, intAddnlColumnCount, strSubKey) < 0 Then
-										' Add strSubKey to strAddnlColumns (when adding, keep sorted alphabetically)
+							If SplitLine(strLineIn, strKey, strItem) Then
+								If strKey.StartsWith("DR") Then
+									If SplitLine(strItem, strSubKey, strSubItem, ";") Then
+										If Array.BinarySearch(strAddnlColumns, 0, intAddnlColumnCount, strSubKey) < 0 Then
+											' Add strSubKey to strAddnlColumns (when adding, keep sorted alphabetically)
 
-										If intAddnlColumnCount = 0 Then
-											strAddnlColumns(0) = strSubKey
-											intAddnlColumnCount = 1
-										Else
-											' Expand the array if needed
-											If intAddnlColumnCount >= strAddnlColumns.Length Then
-												ReDim Preserve strAddnlColumns(strAddnlColumns.Length * 2 - 1)
+											If intAddnlColumnCount = 0 Then
+												strAddnlColumns(0) = strSubKey
+												intAddnlColumnCount = 1
+											Else
+												' Expand the array if needed
+												If intAddnlColumnCount >= strAddnlColumns.Length Then
+													ReDim Preserve strAddnlColumns(strAddnlColumns.Length * 2 - 1)
+												End If
+
+												strAddnlColumns(intAddnlColumnCount) = strSubKey
+												intAddnlColumnCount += 1
+
+												' Re-sort the array
+												Array.Sort(strAddnlColumns, 0, intAddnlColumnCount)
 											End If
-
-											strAddnlColumns(intAddnlColumnCount) = strSubKey
-											intAddnlColumnCount += 1
-
-											' Re-sort the array
-											Array.Sort(strAddnlColumns, 0, intAddnlColumnCount)
 										End If
 									End If
 								End If
 							End If
 						End If
 					End If
-				End If
-            Loop
+				Loop
 
-            ReportProgress("Done Pre-scanning")
+			End Using
+
+			ReportProgress("Done Pre-scanning")
 
 
-        Catch ex As Exception
-            Console.WriteLine("Error in PrescanFileForAddnlColumns: " & ex.Message)
-        Finally
-            If Not srInFile Is Nothing Then srInFile.Close()
-        End Try
+		Catch ex As Exception
+			Console.WriteLine("Error in PrescanFileForAddnlColumns: " & ex.Message)
+		End Try
 
 
     End Sub

@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-	Public Const PROGRAM_DATE As String = "September 21, 2011"
+	Public Const PROGRAM_DATE As String = "May 8, 2012"
 
     Private mMaxCharsPerColumn As Integer
     Private mInputDataFilePath As String

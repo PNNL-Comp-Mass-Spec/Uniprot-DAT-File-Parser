@@ -1,5 +1,8 @@
 Uniprot DAT File Parser Revision History
 
+Version 1.1.4511; May 8, 2012
+	- Updated to support Ensembl being mixed-case (used to be all uppercase)
+
 Version 1.1.4282; September 22, 2011
 	- Now including Accession numbers in the protein description
 	- Now auto-removing "RecName: Full="
