@@ -1,0 +1,85 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+UniprotDATFileParser
+</name>
+</assembly>
+<members>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.Collections.Generic.List{System.String})">
+	<summary>
+ Compares the parameter names in objParameterList with the parameters at the command line
+ </summary>
+	<param name="objParameterList">Parameter list</param>
+	<returns>True if any of the parameters are not present in strParameterList()</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[])">
+	<summary>
+ Compares the parameter names in strParameterList with the parameters at the command line
+ </summary>
+	<param name="strParameterList">Parameter list</param>
+	<returns>True if any of the parameters are not present in strParameterList()</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[],System.Boolean)">
+	<summary>
+ Compares the parameter names in strParameterList with the parameters at the command line
+ </summary>
+	<param name="strParameterList">Parameter list</param>
+	<param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
+	<returns>True if any of the parameters are not present in strParameterList()</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.IsParameterPresent(System.String)">
+	<summary>
+ Look for parameter on the command line
+ </summary>
+	<param name="strParameterName">Parameter name</param>
+	<returns>True if present, otherwise false</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine">
+	<summary>
+ Parse the parameters and switches at the command line; uses / for the switch character and : for the switch parameter character
+ </summary>
+	<returns>Returns True if any command line parameters were found; otherwise false</returns>
+	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char)">
+	<summary>
+ Parse the parameters and switches at the command line; uses : for the switch parameter character
+ </summary>
+	<returns>Returns True if any command line parameters were found; otherwise false</returns>
+	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char,System.Char)">
+	<summary>
+ Parse the parameters and switches at the command line
+ </summary>
+	<param name="chSwitchStartChar"></param>
+	<param name="chSwitchParameterChar"></param>
+	<returns>Returns True if any command line parameters were found; otherwise false</returns>
+	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveNonSwitchParameter(System.Int32)">
+	<summary>
+ Returns the value of the non-switch parameter at the given index
+ </summary>
+	<param name="intParameterIndex">Parameter index</param>
+	<returns>The value of the parameter at the given index; empty string if no value or invalid index</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveParameter(System.Int32,System.String@,System.String@)">
+	<summary>
+ Returns the parameter at the given index
+ </summary>
+	<param name="intParameterIndex">Parameter index</param>
+	<param name="strKey">Parameter name (output)</param>
+	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+	<returns></returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@)">
+	<summary>
+ Look for parameter on the command line and returns its value in strValue
+ </summary>
+	<param name="strKey">Parameter name</param>
+	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+	<returns>True if present, otherwise false</returns>
+</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@,System.Boolean)">
+	<summary>
+ Look for parameter on the command line and returns its value in strValue
+ </summary>
+	<param name="strKey">Parameter name</param>
+	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+	<param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
+	<returns>True if present, otherwise false</returns>
+</member>
+</members>
+</doc>

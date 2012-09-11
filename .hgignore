@@ -25,3 +25,6 @@ bin/[Uu]niprot_sprot_human_Columns.txt
 bin/[Uu]niprot_sprot_human_output.txt
 bin/Junk.fasta
 UniprotDATFileParser_SourceCode/*
+bin/UniprotDATFileParser.vshost.exe.manifest
+bin/UniprotDATFileParser.vshost.exe.config
+bin/UniprotDATFileParser.exe.config

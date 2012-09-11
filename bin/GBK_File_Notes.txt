@@ -1,0 +1,6 @@
+GBK files can be processed by the UniprotDATFileParser.exe app 
+to extract a few of the columns, specifically:
+Accession and Description
+
+We have considered updating it to support additional columns, 
+but this has never been implemented.

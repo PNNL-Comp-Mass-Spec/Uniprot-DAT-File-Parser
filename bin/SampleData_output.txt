@@ -1,0 +1,2 @@
+IPI	Accession	Description	REFSEQ_XP_or_NP	GI	TREMBL	ENSEMBL	Entrez_GeneID	Entrez_GeneName	SwissProt	SwissProt_Name	Chromosome	Sequence_AA_Count	MW	IPI1	IPI2	IPI3	IPI4	
+	CP000689 AAOO01000000 AAOO01000001-AAOO01000076	Acidiphilium cryptum JF-5 plasmid pACRY01, complete sequence.															CP000689 AAOO01000000 AAOO01000001-AAOO01000076				
