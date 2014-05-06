@@ -1,5 +1,11 @@
 Uniprot DAT File Parser Revision History
 
+Version 1.1.5094; December 12, 2013
+	- Updated PrescanFileForAddnlColumns to allow a file to be open with read/write access in another application
+
+Version 1.1.4762; January 14, 2013
+	- Added switches /Species and /SpeciesRegEx
+
 Version 1.1.4511; May 8, 2012
 	- Now splitting out Ensembl entries into three columns
 		- Ensembl_Transcript

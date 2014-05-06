@@ -4,3 +4,8 @@ Accession and Description
 
 We have considered updating it to support additional columns, 
 but this has never been implemented.
+
+As an alternative, use the BioPython script in file ConvertGBK.py
+
+For example:
+	python ConvertGBK.py -i NC_000962.gbk -o NC_000962.fasta

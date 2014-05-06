@@ -28,3 +28,5 @@ UniprotDATFileParser_SourceCode/*
 bin/UniprotDATFileParser.vshost.exe.manifest
 bin/UniprotDATFileParser.vshost.exe.config
 bin/UniprotDATFileParser.exe.config
+bin/SampleData.fasta
+bin/SampleData_Columns.txt

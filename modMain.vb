@@ -27,163 +27,186 @@ Option Strict On
 
 Module modMain
 
-	Public Const PROGRAM_DATE As String = "May 8, 2012"
+	Public Const PROGRAM_DATE As String = "December 12, 2013"
 
     Private mMaxCharsPerColumn As Integer
-    Private mInputDataFilePath As String
+	Private mInputFilePath As String
 
-    Private mIncludeOrganismAndPhylogeny As Boolean
-    Private mIncludeProteinSequence As Boolean
-    Private mWriteFastaFile As Boolean
+	Private mIncludeOrganismAndPhylogeny As Boolean
+	Private mIncludeProteinSequence As Boolean
+	Private mWriteFastaFile As Boolean
 
-    Private mQuietMode As Boolean
+	Private mFastaSpeciesFilter As String
+	Private mFastaSpeciesFilterRegEx As String
 
-    Public Sub Main()
-        Dim intReturnCode As Integer
-        Dim objParseIPIDATFile As clsParseIPIDATFile
-        Dim objParseCommandLine As New clsParseCommandLine
+	Public Function Main() As Integer
+		Dim intReturnCode As Integer
+		Dim objParseIPIDATFile As clsParseIPIDATFile
+		Dim objParseCommandLine As New clsParseCommandLine
 
-        Dim blnProceed As Boolean
-        Dim blnSuccess As Boolean
+		Dim blnProceed As Boolean
+		Dim blnSuccess As Boolean
 
-        Try
-            ' Set the default values
-            mMaxCharsPerColumn = 0
-            mInputDataFilePath = String.Empty
-            mIncludeOrganismAndPhylogeny = False
-            mIncludeProteinSequence = False
-            mWriteFastaFile = False
+		Try
+			' Set the default values
+			mMaxCharsPerColumn = 0
+			mInputFilePath = String.Empty
+			mIncludeOrganismAndPhylogeny = False
+			mIncludeProteinSequence = False
+			mWriteFastaFile = False
 
-            blnProceed = False
-            If objParseCommandLine.ParseCommandLine Then
-                If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
-            End If
+			mFastaSpeciesFilter = String.Empty
+			mFastaSpeciesFilterRegEx = String.Empty
 
-            If Not blnProceed OrElse _
-               objParseCommandLine.NeedToShowHelp OrElse _
-               mInputDataFilePath.Length = 0 Then
-                ShowProgramHelp()
-                intReturnCode = -1
-            Else
-                objParseIPIDATFile = New clsParseIPIDATFile
+			blnProceed = False
+			If objParseCommandLine.ParseCommandLine Then
+				If SetOptionsUsingCommandLineParameters(objParseCommandLine) Then blnProceed = True
+			End If
 
-                With objParseIPIDATFile
-                    .ShowMessages = Not mQuietMode
-                    .IncludeOrganismAndPhylogeny = mIncludeOrganismAndPhylogeny
-                    .IncludeProteinSequence = mIncludeProteinSequence
-                    .WriteFastaFile = mWriteFastaFile
+			If Not blnProceed OrElse _
+			   objParseCommandLine.NeedToShowHelp OrElse _
+			   objParseCommandLine.ParameterCount + objParseCommandLine.NonSwitchParameterCount = 0 OrElse _
+			   mInputFilePath.Length = 0 Then
+				ShowProgramHelp()
+				intReturnCode = -1
+			Else
+				objParseIPIDATFile = New clsParseIPIDATFile
 
-                    ''If Not mParameterFilePath Is Nothing AndAlso mParameterFilePath.Length > 0 Then
-                    ''    .LoadParameterFileSettings(mParameterFilePath)
-                    ''End If
-                End With
+				With objParseIPIDATFile
+					.IncludeOrganismAndPhylogeny = mIncludeOrganismAndPhylogeny
+					.IncludeProteinSequence = mIncludeProteinSequence
+					.WriteFastaFile = mWriteFastaFile
 
-                blnSuccess = objParseIPIDATFile.ParseIPIDATFile(mInputDataFilePath, mMaxCharsPerColumn)
+					.FastaSpeciesFilter = mFastaSpeciesFilter
+					.FastaSpeciesFilterRegEx = mFastaSpeciesFilterRegEx
 
-                If blnSuccess Then
-                    intReturnCode = 0
-                Else
-                    intReturnCode = -1
-                End If
+					''If Not mParameterFilePath Is Nothing AndAlso mParameterFilePath.Length > 0 Then
+					''    .LoadParameterFileSettings(mParameterFilePath)
+					''End If
+				End With
 
-            End If
+				blnSuccess = objParseIPIDATFile.ParseIPIDATFile(mInputFilePath, mMaxCharsPerColumn)
 
-        Catch ex As System.Exception
-            If mQuietMode Then
-                Throw ex
-            Else
-                Console.WriteLine("Error occurred in modMain->Main: " & ControlChars.NewLine & ex.Message)
-            End If
-            intReturnCode = -1
-        End Try
+				If blnSuccess Then
+					intReturnCode = 0
+				Else
+					intReturnCode = -1
+				End If
 
-    End Sub
+			End If
 
-    Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
-        ' Returns True if no problems; otherwise, returns false
+		Catch ex As System.Exception
+			ShowErrorMessage("Error occurred in modMain->Main: " & System.Environment.NewLine & ex.Message)
+			intReturnCode = -1
+		End Try
 
-        Dim strValue As String = String.Empty
-        Dim strValidParameters() As String = New String() {"I", "M", "S", "O", "F", "Q"}
+		Return intReturnCode
 
-        Try
-            ' Make sure no invalid parameters are present
-            If objParseCommandLine.InvalidParametersPresent(strValidParameters) Then
-                Return False
-            Else
+	End Function
 
-                ' Query objParseCommandLine to see if various parameters are present
-                With objParseCommandLine
+	Private Function GetAppVersion() As String
+		Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() & " (" & PROGRAM_DATE & ")"
+	End Function
 
-                    If .NonSwitchParameterCount > 0 Then
-                        ' Treat the first non-switch parameter as the input file
-                        mInputDataFilePath = .RetrieveNonSwitchParameter(0)
-                    End If
+	Private Function SetOptionsUsingCommandLineParameters(ByVal objParseCommandLine As clsParseCommandLine) As Boolean
+		' Returns True if no problems; otherwise, returns false
 
-                    If .RetrieveValueForParameter("I", strValue) Then mInputDataFilePath = strValue
+		Dim strValue As String = String.Empty
+		Dim strValidParameters() As String = New String() {"I", "M", "S", "O", "F", "Q", "Species", "SpeciesRegEx"}
 
-                    If .RetrieveValueForParameter("M", strValue) Then
-                        Try
-                            mMaxCharsPerColumn = CInt(strValue)
-                        Catch ex As Exception
-                            ' Ignore errors here
-                        End Try
-                    End If
+		Try
+			' Make sure no invalid parameters are present
+			If objParseCommandLine.InvalidParametersPresent(strValidParameters) Then
+				Return False
+			Else
 
-                    If .RetrieveValueForParameter("O", strValue) Then mIncludeOrganismAndPhylogeny = True
-                    If .RetrieveValueForParameter("S", strValue) Then mIncludeProteinSequence = True
-                    If .RetrieveValueForParameter("F", strValue) Then mWriteFastaFile = True
+				' Query objParseCommandLine to see if various parameters are present
+				With objParseCommandLine
+					' Query objParseCommandLine to see if various parameters are present
+					If .RetrieveValueForParameter("I", strValue) Then
+						mInputFilePath = strValue
+					ElseIf .NonSwitchParameterCount > 0 Then
+						' Treat the first non-switch parameter as the input file
+						mInputFilePath = .RetrieveNonSwitchParameter(0)
+					End If
 
-                    If .RetrieveValueForParameter("Q", strValue) Then mQuietMode = True
-                End With
+					If .RetrieveValueForParameter("M", strValue) Then
+						Try
+							mMaxCharsPerColumn = CInt(strValue)
+						Catch ex As Exception
+							' Ignore errors here
+						End Try
+					End If
 
-                Return True
-            End If
+					If .RetrieveValueForParameter("O", strValue) Then mIncludeOrganismAndPhylogeny = True
+					If .RetrieveValueForParameter("S", strValue) Then mIncludeProteinSequence = True
+					If .RetrieveValueForParameter("F", strValue) Then mWriteFastaFile = True
 
-        Catch ex As System.Exception
-            If mQuietMode Then
-                Throw New System.Exception("Error parsing the command line parameters", ex)
-            Else
-                Console.WriteLine("Error parsing the command line parameters: " & ControlChars.NewLine & ex.Message)
-            End If
-        End Try
+					If .RetrieveValueForParameter("Species", strValue) Then mFastaSpeciesFilter = strValue
+					If .RetrieveValueForParameter("SpeciesRegEx", strValue) Then mFastaSpeciesFilterRegEx = strValue
+				End With
 
-    End Function
+				Return True
+			End If
 
-    Private Sub ShowProgramHelp()
+		Catch ex As Exception
+			ShowErrorMessage("Error parsing the command line parameters: " & System.Environment.NewLine & ex.Message)
+		End Try
 
-        Try
+		Return False
 
-            Console.WriteLine("This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files.")
-            Console.WriteLine()
+	End Function
 
-            Console.WriteLine("Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
-                              " InputFileName.dat [/M:MaximumCharsPerColumn] /S /O /F")
-            Console.WriteLine()
+	Private Sub ShowErrorMessage(ByVal strMessage As String)
+		Dim strSeparator As String = "------------------------------------------------------------------------------"
 
-            Console.WriteLine("The input file name is required. If the filename contains spaces, then surround it with double quotes. ")
-            Console.WriteLine("Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file.")
-            Console.WriteLine()
+		Console.WriteLine()
+		Console.WriteLine(strSeparator)
+		Console.WriteLine(strMessage)
+		Console.WriteLine(strSeparator)
+		Console.WriteLine()
 
-            Console.WriteLine("Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information.")
-            Console.WriteLine()
+	End Sub
 
-            Console.WriteLine("Use /F to specify that a .Fasta file be created for the proteins.")
-            Console.WriteLine()
+	Private Sub ShowProgramHelp()
 
-            Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007")
-            Console.WriteLine()
+		Try
 
-            Console.WriteLine("E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com")
-            Console.WriteLine("Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/")
-            Console.WriteLine()
+			Console.WriteLine("This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files.")
+			Console.WriteLine()
 
-            ' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
-            System.Threading.Thread.Sleep(750)
+			Console.WriteLine("Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
+			   " InputFileName.dat [/M:MaximumCharsPerColumn] [/S] [/O]")
+			Console.WriteLine("  [/F] [/Species:FilterText] [/SpeciesRegEx:""RegEx""]")
+			Console.WriteLine()
 
-        Catch ex As System.Exception
-            Console.WriteLine("Error displaying the program syntax: " & ex.Message)
-        End Try
+			Console.WriteLine("The input file name is required. If the filename contains spaces, then surround it with double quotes. ")
+			Console.WriteLine("Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file.")
+			Console.WriteLine()
 
-    End Sub
+			Console.WriteLine("Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information.")
+			Console.WriteLine()
+
+			Console.WriteLine("Use /F to specify that a .Fasta file be created for the proteins.")
+			Console.WriteLine("Use /Species:FilterText to only write entries to the fasta file if the Species tag contains FilterText")
+			Console.WriteLine("Use /SpeciesRegEx:""RegEx"" to only write entries to the fasta file if the Species tag matches the specified regular expression")
+			Console.WriteLine()
+
+			Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007")
+			Console.WriteLine("Version: " & GetAppVersion())
+			Console.WriteLine()
+
+			Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com")
+			Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov")
+			Console.WriteLine()
+
+			' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)
+			System.Threading.Thread.Sleep(750)
+
+		Catch ex As Exception
+			ShowErrorMessage("Error displaying the program syntax: " & ex.Message)
+		End Try
+
+	End Sub
 
 End Module
