@@ -19,12 +19,21 @@ You can optionally limit the maximum characters to retain for each column
 using the /M switch, like this:
   Uniprot_DAT_File_Parser.exe Inputfile.Dat /M:200
 
+Use /S to include the protein sequence in the output file.  
+Use /O to include the organism name and phylogeny information.
+
+Use /F to specify that a .Fasta file be created for the proteins.
+
+Use /Species:FilterText to only write entries to the fasta file if the Species tag contains FilterText
+Use /SpeciesRegEx:"RegEx" to only write entries to the fasta file if the Species tag matches the 
+specified regular expression
+
 -------------------------------------------------------------------------------
 Written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA)
 Copyright 2007, Battelle Memorial Institute.  All Rights Reserved.
 
-E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
-Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/
+E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
+Website: http://omics.pnl.gov/ or http://www.sysbio.org/resources/staff/
 -------------------------------------------------------------------------------
 
 Licensed under the Apache License, Version 2.0; you may not use this file except 
