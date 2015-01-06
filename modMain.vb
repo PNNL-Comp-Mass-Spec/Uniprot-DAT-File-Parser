@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-	Public Const PROGRAM_DATE As String = "December 12, 2013"
+    Public Const PROGRAM_DATE As String = "January 5, 2015"
 
     Private mMaxCharsPerColumn As Integer
 	Private mInputFilePath As String
@@ -38,6 +38,7 @@ Module modMain
 
 	Private mFastaSpeciesFilter As String
 	Private mFastaSpeciesFilterRegEx As String
+    Private mOrganismFilterFilePath As String
 
 	Public Function Main() As Integer
 		Dim intReturnCode As Integer
@@ -56,7 +57,8 @@ Module modMain
 			mWriteFastaFile = False
 
 			mFastaSpeciesFilter = String.Empty
-			mFastaSpeciesFilterRegEx = String.Empty
+            mFastaSpeciesFilterRegEx = String.Empty
+            mOrganismFilterFilePath = String.Empty
 
 			blnProceed = False
 			If objParseCommandLine.ParseCommandLine Then
@@ -79,6 +81,8 @@ Module modMain
 
 					.FastaSpeciesFilter = mFastaSpeciesFilter
 					.FastaSpeciesFilterRegEx = mFastaSpeciesFilterRegEx
+
+                    .OrganismFilterFilePath = mOrganismFilterFilePath
 
 					''If Not mParameterFilePath Is Nothing AndAlso mParameterFilePath.Length > 0 Then
 					''    .LoadParameterFileSettings(mParameterFilePath)
@@ -112,7 +116,7 @@ Module modMain
 		' Returns True if no problems; otherwise, returns false
 
 		Dim strValue As String = String.Empty
-		Dim strValidParameters() As String = New String() {"I", "M", "S", "O", "F", "Q", "Species", "SpeciesRegEx"}
+        Dim strValidParameters() As String = New String() {"I", "M", "S", "O", "F", "Q", "Species", "SpeciesRegEx", "OrgFile"}
 
 		Try
 			' Make sure no invalid parameters are present
@@ -143,7 +147,10 @@ Module modMain
 					If .RetrieveValueForParameter("F", strValue) Then mWriteFastaFile = True
 
 					If .RetrieveValueForParameter("Species", strValue) Then mFastaSpeciesFilter = strValue
-					If .RetrieveValueForParameter("SpeciesRegEx", strValue) Then mFastaSpeciesFilterRegEx = strValue
+                    If .RetrieveValueForParameter("SpeciesRegEx", strValue) Then mFastaSpeciesFilterRegEx = strValue
+
+                    If .RetrieveValueForParameter("OrgFile", strValue) Then mOrganismFilterFilePath = strValue
+
 				End With
 
 				Return True
@@ -177,20 +184,26 @@ Module modMain
 
 			Console.WriteLine("Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _
 			   " InputFileName.dat [/M:MaximumCharsPerColumn] [/S] [/O]")
-			Console.WriteLine("  [/F] [/Species:FilterText] [/SpeciesRegEx:""RegEx""]")
+            Console.WriteLine("  [/F] [/Species:FilterText] [/SpeciesRegEx:""RegEx""]")
+            Console.WriteLine("  [/OrgFile:FilePath]")
 			Console.WriteLine()
 
 			Console.WriteLine("The input file name is required. If the filename contains spaces, then surround it with double quotes. ")
-			Console.WriteLine("Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file.")
+            Console.WriteLine("Use /M to specify the maximum number of characters to retain for each column, useful to limit the line length for each protein in the output file")
 			Console.WriteLine()
 
-			Console.WriteLine("Use /S to include the protein sequence in the output file.  Use /O to include the organism name and phylogeny information.")
+            Console.WriteLine("Use /S to include the protein sequence in the output file (ignored if using /F)")
+            Console.WriteLine("Use /O to include the organism name and phylogeny information (ignored if using /F)")
 			Console.WriteLine()
 
-			Console.WriteLine("Use /F to specify that a .Fasta file be created for the proteins.")
+            Console.WriteLine("Use /F to specify that a .Fasta file be created for the proteins")
+            Console.WriteLine()
+
 			Console.WriteLine("Use /Species:FilterText to only write entries to the fasta file if the Species tag contains FilterText")
-			Console.WriteLine("Use /SpeciesRegEx:""RegEx"" to only write entries to the fasta file if the Species tag matches the specified regular expression")
-			Console.WriteLine()
+            Console.WriteLine("Use /SpeciesRegEx:""RegEx"" to only write entries to the fasta file if the Species tag matches the specified regular expression")
+            Console.WriteLine()
+            Console.WriteLine("Use /OrgFile:FilePath to specify the path to a file containing organism names to filter on (one name per line).  The organism names must be exact matches to the organism names listed in the _OrganismSummary.txt file that is created by this program")
+            Console.WriteLine()
 
 			Console.WriteLine("Program written by Matthew Monroe for the Department of Energy (PNNL, Richland, WA) in 2007")
 			Console.WriteLine("Version: " & GetAppVersion())

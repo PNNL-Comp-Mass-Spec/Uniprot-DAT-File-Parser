@@ -80,6 +80,57 @@ UniprotDATFileParser
 	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
 	<param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
 	<returns>True if present, otherwise false</returns>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeOrganismAndPhylogeny">
+	<summary>
+ Controls whether the organism and phylogeny information is included in the tab-delimited text file
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>Auto-set to true when WriteFastaFile is true</remarks>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeProteinSequence">
+	<summary>
+ Controls whether the protein sequence is included in the tab-delimited text file
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>Auto-set to true when WriteFastaFile is true</remarks>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.WriteFastaFile">
+	<summary>
+ Set to True to create a Fasta file; false to create a tab-delimited text file
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>When true, both IncludeOrganismAndPhylogeny and IncludeProteinSequence are auto-set to true</remarks>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilter">
+	<summary>
+ Text-based species filter
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>Only used when creating a Fasta file</remarks>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilterRegEx">
+	<summary>
+ RegEx-based species filter
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>Only used when creating a Fasta file</remarks>
+</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.OrganismFilterFilePath">
+	<summary>
+ Text file with organism names to filter on; only proteins from the given organisms will be written to the output file
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks>The organism names must be exact matches to those names that appear in the _OrganismSummary.txt file created by this program</remarks>
+</member><member name="M:UniprotDATFileParser.clsParseIPIDATFile.ParseOrganismInfo(System.IO.StreamWriter,System.String,System.String)">
+	<summary>
+ Extracts the organism name, strain info, and any additional information from the Organism Info
+ </summary>
+	<param name="swOrganismFile"></param>
+	<param name="proteinName"></param>
+	<param name="organismInfo"></param>
+	<returns>Organism name</returns>
+	<remarks>Returns UNKNOWN_ORGANISM if the organism name cannot be determined</remarks>
 </member>
 </members>
 </doc>
