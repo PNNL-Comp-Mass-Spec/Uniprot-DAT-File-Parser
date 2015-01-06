@@ -179,7 +179,7 @@ Module modMain
 
 		Try
 
-			Console.WriteLine("This program will read a Uniprot (IPI) .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://www.ebi.ac.uk/IPI/FAQs.html for a list of frequently asked questions concerning Uniprot files.")
+            Console.WriteLine("This program will read a Uniprot .DAT file with protein information, then parse out the accession names and save them in a tab-delimited file. See http://web.expasy.org/docs/userman.html for a list of frequently asked questions concerning Uniprot files.")
 			Console.WriteLine()
 
 			Console.WriteLine("Program syntax:" & ControlChars.NewLine & System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location) & _

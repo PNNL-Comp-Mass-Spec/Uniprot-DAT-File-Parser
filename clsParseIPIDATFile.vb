@@ -1068,7 +1068,7 @@ Public Class clsParseIPIDATFile
             End If
 
             If Not strData(eTargetColumn.Organism) Is Nothing Then
-                sbProteinDescription.Append(" [" & strData(eTargetColumn.Organism) & "]")
+                sbProteinDescription.Append(" [" & strData(eTargetColumn.Organism).TrimEnd("."c) & "]")
             End If
 
             ' When writing out, replace "RecName: Full=" with ""
