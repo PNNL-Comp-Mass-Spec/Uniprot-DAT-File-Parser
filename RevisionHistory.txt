@@ -1,5 +1,8 @@
 Uniprot DAT File Parser Revision History
 
+Version 1.1.5674; July 15, 2015
+	- Progress now shows percent complete, while limiting updates to once per second
+
 Version 1.1.5483; January 5, 2015
 	- Now creating files _OrganismSummary.txt and _OrganismMap.txt
 	- Added command line parameter /OrgFile to allow for filtering for a list of organisms

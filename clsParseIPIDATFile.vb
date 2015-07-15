@@ -198,6 +198,41 @@ Public Class clsParseIPIDATFile
         End If
     End Function
 
+    ''' <summary>
+    ''' This function reads the input file one byte at a time, looking for the first occurence of Chr(10) or Chr(13) (aka vbCR or VBLF)
+    ''' When found, the next byte is examined
+    ''' If the next byte is also Chr(10) or Chr(13), then the line terminator is assumed to be 2 bytes; if not found, then it is assumed to be one byte
+    ''' </summary>
+    ''' <param name="fi"></param>
+    ''' <returns>1 if a one-byte line terminator; 2 if a two-byte line terminator</returns>
+    ''' <remarks></remarks>
+    Private Function LineEndCharacterCount(ByVal fi As FileInfo) As Byte
+
+        Dim terminatorSize As Byte = 1         ' Initially assume a one-byte line terminator
+
+        If (Not fi.Exists) Then Return terminatorSize
+
+        Using reader = New StreamReader(New FileStream(fi.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            While Not reader.EndOfStream
+                Dim charCode = reader.Read()
+                If charCode = 10 Or charCode = 13 Then
+                    If reader.EndOfStream Then Exit While
+                    Dim charCode2 = reader.Read()
+                    If charCode2 = 10 Or charCode2 = 13 Then
+                        terminatorSize = 2
+                        Exit While
+                    Else
+                        terminatorSize = 1
+                        Exit While
+                    End If
+                End If
+            End While
+        End Using
+
+        Return terminatorSize
+
+    End Function
+
     Public Function ParseIPIDATFile(ByVal strInputFileName As String, ByVal intMaxCharsPerColumnToWrite As Integer) As Boolean
 
         Dim fiSourceFile As FileInfo
@@ -297,8 +332,13 @@ Public Class clsParseIPIDATFile
             Return False
         End Try
 
+        Dim lngInputFileBytes As Int64
+        Dim lineTerminatorSize As Byte = LineEndCharacterCount(fiSourceFile)
+
         Try
-            srInFile = New StreamReader(New FileStream(fiSourceFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            Dim fsInputFile = New FileStream(fiSourceFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            lngInputFileBytes = fsInputFile.Length
+            srInFile = New StreamReader(fsInputFile)
         Catch ex As Exception
             Console.WriteLine("Error opening the input file (" & strInputFileName & ") in ParseIPIDataFile: " & ex.Message)
             Return False
@@ -354,11 +394,17 @@ Public Class clsParseIPIDATFile
             ClearArray(strData)
 
             intRowsProcessed = 0
+            Dim bytesRead As Int64 = 0
+            Dim dtLastUpdate = DateTime.UtcNow
+
             blnDataPresent = False
-            Do While srInFile.Peek > -1
+            Do While Not srInFile.EndOfStream
                 strLineIn = srInFile.ReadLine
+                bytesRead += lineTerminatorSize
 
                 If Not String.IsNullOrEmpty(strLineIn) Then
+
+                    bytesRead += strLineIn.Length
                     strLineIn = strLineIn.TrimEnd
 
                     If strLineIn = "//" Then
@@ -371,11 +417,15 @@ Public Class clsParseIPIDATFile
 
                         intRowsProcessed += 1
 
-                        If intRowsProcessed Mod 1000 = 0 Then
+                        If DateTime.UtcNow.Subtract(dtLastUpdate).totalseconds >= 1 Then
+                            dtLastUpdate = DateTime.UtcNow
+
+                            Dim percentComplete = bytesRead / CDbl(lngInputFileBytes) * 100
+
                             If intEntryCount = 0 Then
-                                ReportProgress("Working: " & intRowsProcessed & " entries processed")
+                                ReportProgress(String.Format("Working, {0:0.0}% complete: {1:#,##0} entries processed", percentComplete, intRowsProcessed))
                             Else
-                                ReportProgress("Working: " & intRowsProcessed & " / " & intEntryCount & " entries processed")
+                                ReportProgress(String.Format("Working, {0:0.0}% complete: {1:#,##0}  / {2:#,##0} entries processed", percentComplete, intRowsProcessed, intEntryCount))
                             End If
                         End If
 

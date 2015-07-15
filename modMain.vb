@@ -8,8 +8,8 @@ Option Strict On
 ' Program started February 5, 2007
 ' Copyright 2007, Battelle Memorial Institute.  All Rights Reserved.
 
-' E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
-' Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/
+' E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com
+' Website: http://omics.pnl.gov/ or http://www.sysbio.org/resources/staff/ or http://panomics.pnnl.gov/
 ' -------------------------------------------------------------------------------
 ' 
 ' Licensed under the Apache License, Version 2.0; you may not use this file except
@@ -27,7 +27,7 @@ Option Strict On
 
 Module modMain
 
-    Public Const PROGRAM_DATE As String = "January 5, 2015"
+    Public Const PROGRAM_DATE As String = "July 15, 2015"
 
     Private mMaxCharsPerColumn As Integer
 	Private mInputFilePath As String
@@ -142,11 +142,11 @@ Module modMain
 						End Try
 					End If
 
-					If .RetrieveValueForParameter("O", strValue) Then mIncludeOrganismAndPhylogeny = True
-					If .RetrieveValueForParameter("S", strValue) Then mIncludeProteinSequence = True
-					If .RetrieveValueForParameter("F", strValue) Then mWriteFastaFile = True
+                    If .IsParameterPresent("O") Then mIncludeOrganismAndPhylogeny = True
+                    If .IsParameterPresent("S") Then mIncludeProteinSequence = True
+                    If .IsParameterPresent("F") Then mWriteFastaFile = True
 
-					If .RetrieveValueForParameter("Species", strValue) Then mFastaSpeciesFilter = strValue
+                    If .RetrieveValueForParameter("Species", strValue) Then mFastaSpeciesFilter = strValue
                     If .RetrieveValueForParameter("SpeciesRegEx", strValue) Then mFastaSpeciesFilterRegEx = strValue
 
                     If .RetrieveValueForParameter("OrgFile", strValue) Then mOrganismFilterFilePath = strValue
@@ -210,7 +210,7 @@ Module modMain
 			Console.WriteLine()
 
 			Console.WriteLine("E-mail: matthew.monroe@pnnl.gov or matt@alchemistmatt.com")
-			Console.WriteLine("Website: http://panomics.pnnl.gov/ or http://omics.pnl.gov")
+			Console.WriteLine("Website: http://omics.pnl.gov/ or http://panomics.pnnl.gov/")
 			Console.WriteLine()
 
 			' Delay for 750 msec in case the user double clicked this file from within Windows Explorer (or started the program via a shortcut)

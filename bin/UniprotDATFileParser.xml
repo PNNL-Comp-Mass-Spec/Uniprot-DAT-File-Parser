@@ -31,6 +31,7 @@ UniprotDATFileParser
  </summary>
 	<param name="strParameterName">Parameter name</param>
 	<returns>True if present, otherwise false</returns>
+	<remarks>Does not work for /? or /help -- for those, use .NeedToShowHelp</remarks>
 </member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine">
 	<summary>
  Parse the parameters and switches at the command line; uses / for the switch character and : for the switch parameter character
@@ -122,6 +123,15 @@ UniprotDATFileParser
 	<value></value>
 	<returns></returns>
 	<remarks>The organism names must be exact matches to those names that appear in the _OrganismSummary.txt file created by this program</remarks>
+</member><member name="M:UniprotDATFileParser.clsParseIPIDATFile.LineEndCharacterCount(System.IO.FileInfo)">
+	<summary>
+ This function reads the input file one byte at a time, looking for the first occurence of Chr(10) or Chr(13) (aka vbCR or VBLF)
+ When found, the next byte is examined
+ If the next byte is also Chr(10) or Chr(13), then the line terminator is assumed to be 2 bytes; if not found, then it is assumed to be one byte
+ </summary>
+	<param name="fi"></param>
+	<returns>1 if a one-byte line terminator; 2 if a two-byte line terminator</returns>
+	<remarks></remarks>
 </member><member name="M:UniprotDATFileParser.clsParseIPIDATFile.ParseOrganismInfo(System.IO.StreamWriter,System.String,System.String)">
 	<summary>
  Extracts the organism name, strain info, and any additional information from the Organism Info
