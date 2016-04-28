@@ -834,7 +834,7 @@ Public Class clsParseIPIDATFile
 
 
     Private Sub ReportProgress(ByVal strProgress As String)
-        Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") & " " & strProgress)
+        Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") & ": " & strProgress)
     End Sub
 
     Private Function SplitLine(ByVal strInputText As String, ByRef strKey As String, ByRef strItem As String, Optional ByVal chDelimiter As String = " "c) As Boolean
