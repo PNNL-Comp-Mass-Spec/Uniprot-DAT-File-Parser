@@ -7,140 +7,158 @@ UniprotDATFileParser
 </assembly>
 <members>
 <member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.Collections.Generic.List{System.String})">
-	<summary>
+ <summary>
  Compares the parameter names in objParameterList with the parameters at the command line
  </summary>
-	<param name="objParameterList">Parameter list</param>
-	<returns>True if any of the parameters are not present in strParameterList()</returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[])">
-	<summary>
+ <param name="objParameterList">Parameter list</param>
+ <returns>True if any of the parameters are not present in strParameterList()</returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[])">
+ <summary>
  Compares the parameter names in strParameterList with the parameters at the command line
  </summary>
-	<param name="strParameterList">Parameter list</param>
-	<returns>True if any of the parameters are not present in strParameterList()</returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[],System.Boolean)">
-	<summary>
+ <param name="strParameterList">Parameter list</param>
+ <returns>True if any of the parameters are not present in strParameterList()</returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.InvalidParametersPresent(System.String[],System.Boolean)">
+ <summary>
  Compares the parameter names in strParameterList with the parameters at the command line
  </summary>
-	<param name="strParameterList">Parameter list</param>
-	<param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
-	<returns>True if any of the parameters are not present in strParameterList()</returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.IsParameterPresent(System.String)">
-	<summary>
+ <param name="strParameterList">Parameter list</param>
+ <param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
+ <returns>True if any of the parameters are not present in strParameterList()</returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.IsParameterPresent(System.String)">
+ <summary>
  Look for parameter on the command line
  </summary>
-	<param name="strParameterName">Parameter name</param>
-	<returns>True if present, otherwise false</returns>
-	<remarks>Does not work for /? or /help -- for those, use .NeedToShowHelp</remarks>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine">
-	<summary>
+ <param name="strParameterName">Parameter name</param>
+ <returns>True if present, otherwise false</returns>
+ <remarks>Does not work for /? or /help -- for those, use .NeedToShowHelp</remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine">
+ <summary>
  Parse the parameters and switches at the command line; uses / for the switch character and : for the switch parameter character
  </summary>
-	<returns>Returns True if any command line parameters were found; otherwise false</returns>
-	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char)">
-	<summary>
+ <returns>Returns True if any command line parameters were found; otherwise false</returns>
+ <remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char)">
+ <summary>
  Parse the parameters and switches at the command line; uses : for the switch parameter character
  </summary>
-	<returns>Returns True if any command line parameters were found; otherwise false</returns>
-	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char,System.Char)">
-	<summary>
+ <returns>Returns True if any command line parameters were found; otherwise false</returns>
+ <remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.ParseCommandLine(System.Char,System.Char)">
+ <summary>
  Parse the parameters and switches at the command line
  </summary>
-	<param name="chSwitchStartChar"></param>
-	<param name="chSwitchParameterChar"></param>
-	<returns>Returns True if any command line parameters were found; otherwise false</returns>
-	<remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveNonSwitchParameter(System.Int32)">
-	<summary>
+ <param name="chSwitchStartChar"></param>
+ <param name="chSwitchParameterChar"></param>
+ <returns>Returns True if any command line parameters were found; otherwise false</returns>
+ <remarks>If /? or /help is found, then returns False and sets mShowHelp to True</remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveNonSwitchParameter(System.Int32)">
+ <summary>
  Returns the value of the non-switch parameter at the given index
  </summary>
-	<param name="intParameterIndex">Parameter index</param>
-	<returns>The value of the parameter at the given index; empty string if no value or invalid index</returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveParameter(System.Int32,System.String@,System.String@)">
-	<summary>
+ <param name="intParameterIndex">Parameter index</param>
+ <returns>The value of the parameter at the given index; empty string if no value or invalid index</returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveParameter(System.Int32,System.String@,System.String@)">
+ <summary>
  Returns the parameter at the given index
  </summary>
-	<param name="intParameterIndex">Parameter index</param>
-	<param name="strKey">Parameter name (output)</param>
-	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
-	<returns></returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@)">
-	<summary>
+ <param name="intParameterIndex">Parameter index</param>
+ <param name="strKey">Parameter name (output)</param>
+ <param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+ <returns></returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@)">
+ <summary>
  Look for parameter on the command line and returns its value in strValue
  </summary>
-	<param name="strKey">Parameter name</param>
-	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
-	<returns>True if present, otherwise false</returns>
-</member><member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@,System.Boolean)">
-	<summary>
+ <param name="strKey">Parameter name</param>
+ <param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+ <returns>True if present, otherwise false</returns>
+</member>
+<member name="M:UniprotDATFileParser.clsParseCommandLine.RetrieveValueForParameter(System.String,System.String@,System.Boolean)">
+ <summary>
  Look for parameter on the command line and returns its value in strValue
  </summary>
-	<param name="strKey">Parameter name</param>
-	<param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
-	<param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
-	<returns>True if present, otherwise false</returns>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeOrganismAndPhylogeny">
-	<summary>
+ <param name="strKey">Parameter name</param>
+ <param name="strValue">Value associated with the parameter; empty string if no value (output)</param>
+ <param name="blnCaseSensitive">True to perform case-sensitive matching of the parameter name</param>
+ <returns>True if present, otherwise false</returns>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeOrganismAndPhylogeny">
+ <summary>
  Controls whether the organism and phylogeny information is included in the tab-delimited text file
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>Auto-set to true when WriteFastaFile is true</remarks>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeProteinSequence">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>Auto-set to true when WriteFastaFile is true</remarks>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.IncludeProteinSequence">
+ <summary>
  Controls whether the protein sequence is included in the tab-delimited text file
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>Auto-set to true when WriteFastaFile is true</remarks>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.WriteFastaFile">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>Auto-set to true when WriteFastaFile is true</remarks>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.WriteFastaFile">
+ <summary>
  Set to True to create a Fasta file; false to create a tab-delimited text file
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>When true, both IncludeOrganismAndPhylogeny and IncludeProteinSequence are auto-set to true</remarks>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilter">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>When true, both IncludeOrganismAndPhylogeny and IncludeProteinSequence are auto-set to true</remarks>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilter">
+ <summary>
  Text-based species filter
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>Only used when creating a Fasta file</remarks>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilterRegEx">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>Only used when creating a Fasta file</remarks>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.FastaSpeciesFilterRegEx">
+ <summary>
  RegEx-based species filter
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>Only used when creating a Fasta file</remarks>
-</member><member name="P:UniprotDATFileParser.clsParseIPIDATFile.OrganismFilterFilePath">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>Only used when creating a Fasta file</remarks>
+</member>
+<member name="P:UniprotDATFileParser.clsParseIPIDATFile.OrganismFilterFilePath">
+ <summary>
  Text file with organism names to filter on; only proteins from the given organisms will be written to the output file
  </summary>
-	<value></value>
-	<returns></returns>
-	<remarks>The organism names must be exact matches to those names that appear in the _OrganismSummary.txt file created by this program</remarks>
-</member><member name="M:UniprotDATFileParser.clsParseIPIDATFile.LineEndCharacterCount(System.IO.FileInfo)">
-	<summary>
+ <value></value>
+ <returns></returns>
+ <remarks>The organism names must be exact matches to those names that appear in the _OrganismSummary.txt file created by this program</remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseIPIDATFile.LineEndCharacterCount(System.IO.FileInfo)">
+ <summary>
  This function reads the input file one byte at a time, looking for the first occurence of Chr(10) or Chr(13) (aka vbCR or VBLF)
  When found, the next byte is examined
  If the next byte is also Chr(10) or Chr(13), then the line terminator is assumed to be 2 bytes; if not found, then it is assumed to be one byte
  </summary>
-	<param name="fi"></param>
-	<returns>1 if a one-byte line terminator; 2 if a two-byte line terminator</returns>
-	<remarks></remarks>
-</member><member name="M:UniprotDATFileParser.clsParseIPIDATFile.ParseOrganismInfo(System.IO.StreamWriter,System.String,System.String)">
-	<summary>
+ <param name="fi"></param>
+ <returns>1 if a one-byte line terminator; 2 if a two-byte line terminator</returns>
+ <remarks></remarks>
+</member>
+<member name="M:UniprotDATFileParser.clsParseIPIDATFile.ParseOrganismInfo(System.IO.StreamWriter,System.String,System.String)">
+ <summary>
  Extracts the organism name, strain info, and any additional information from the Organism Info
  </summary>
-	<param name="swOrganismFile"></param>
-	<param name="proteinName"></param>
-	<param name="organismInfo"></param>
-	<returns>Organism name</returns>
-	<remarks>Returns UNKNOWN_ORGANISM if the organism name cannot be determined</remarks>
+ <param name="swOrganismFile"></param>
+ <param name="proteinName"></param>
+ <param name="organismInfo"></param>
+ <returns>Organism name</returns>
+ <remarks>Returns UNKNOWN_ORGANISM if the organism name cannot be determined</remarks>
 </member>
 </members>
 </doc>
