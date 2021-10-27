@@ -2,3 +2,6 @@
 name: Uniprot-DAT-File-Parser
 description: The Uniprot DAT File Parser can read a Uniprot .Dat file and parse out the information for each entry, creating a series of tab delimited text files or creating a FASTA file.
 url: https://pnnl-comp-mass-spec.github.io/Uniprot-DAT-File-Parser/
+
+# Google Analytics
+google_analytics: G-LXXKP1N66C
