@@ -1,6 +1,6 @@
 Option Strict On
 
-' This class reads an IPI DAT file and creates a tab-delimited text file with 
+' This class reads a Uniprot DAT file and creates a tab-delimited text file with
 ' the information split into multiple fields
 '
 ' -------------------------------------------------------------------------------
@@ -8,21 +8,21 @@ Option Strict On
 ' Program started February 5, 2007
 ' Copyright 2007, Battelle Memorial Institute.  All Rights Reserved.
 
-' E-mail: matthew.monroe@pnl.gov or matt@alchemistmatt.com
-' Website: http://ncrr.pnl.gov/ or http://www.sysbio.org/resources/staff/
+' E-mail: matthew.monroe@pnnl.gov or proteomics@pnnl.gov
+' Website: https://github.com/PNNL-Comp-Mass-Spec/ or https://www.pnnl.gov/integrative-omics
 ' -------------------------------------------------------------------------------
-' 
+'
 ' Licensed under the Apache License, Version 2.0; you may not use this file except
-' in compliance with the License.  You may obtain a copy of the License at 
+' in compliance with the License.  You may obtain a copy of the License at
 ' http://www.apache.org/licenses/LICENSE-2.0
 '
-' Notice: This computer software was prepared by Battelle Memorial Institute, 
-' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the 
-' Department of Energy (DOE).  All rights in the computer software are reserved 
-' by DOE on behalf of the United States Government and the Contractor as 
-' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY 
-' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS 
-' SOFTWARE.  This notice including this sentence must appear on any copies of 
+' Notice: This computer software was prepared by Battelle Memorial Institute,
+' hereinafter the Contractor, under Contract No. DE-AC05-76RL0 1830 with the
+' Department of Energy (DOE).  All rights in the computer software are reserved
+' by DOE on behalf of the United States Government and the Contractor as
+' provided in the Contract.  NEITHER THE GOVERNMENT NOR THE CONTRACTOR MAKES ANY
+' WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LIABILITY FOR THE USE OF THIS
+' SOFTWARE.  This notice including this sentence must appear on any copies of
 ' this computer software.
 
 Imports System.Collections.Generic
@@ -31,6 +31,8 @@ Imports System.Text.RegularExpressions
 Imports System.Text
 
 Public Class clsParseIPIDATFile
+
+    ' Ignore Spelling: Ensembl, Entrez, Prescan, Uniprot
 
 #Region "Constants and Enums"
 
@@ -108,7 +110,7 @@ Public Class clsParseIPIDATFile
     Public Property IncludeProteinSequence() As Boolean
 
     ''' <summary>
-    ''' Set to True to create a Fasta file; false to create a tab-delimited text file
+    ''' Set to True to create a FASTA file; false to create a tab-delimited text file
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
@@ -120,7 +122,7 @@ Public Class clsParseIPIDATFile
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
-    ''' <remarks>Only used when creating a Fasta file</remarks>
+    ''' <remarks>Only used when creating a FASTA file</remarks>
     Public Property FastaSpeciesFilter() As String
 
     ''' <summary>
@@ -128,7 +130,7 @@ Public Class clsParseIPIDATFile
     ''' </summary>
     ''' <value></value>
     ''' <returns></returns>
-    ''' <remarks>Only used when creating a Fasta file</remarks>
+    ''' <remarks>Only used when creating a FASTA file</remarks>
     Public Property FastaSpeciesFilterRegEx() As String
 
     ''' <summary>
@@ -199,7 +201,7 @@ Public Class clsParseIPIDATFile
     End Function
 
     ''' <summary>
-    ''' This function reads the input file one byte at a time, looking for the first occurence of Chr(10) or Chr(13) (aka vbCR or VBLF)
+    ''' This function reads the input file one byte at a time, looking for the first occurrence of Chr(10) or Chr(13) (aka vbCR or VBLF)
     ''' When found, the next byte is examined
     ''' If the next byte is also Chr(10) or Chr(13), then the line terminator is assumed to be 2 bytes; if not found, then it is assumed to be one byte
     ''' </summary>
@@ -381,7 +383,7 @@ Public Class clsParseIPIDATFile
             swOrganismFile.WriteLine("Protein" & ControlChars.Tab & "Organism" & ControlChars.Tab & "Strain" & ControlChars.Tab & "Additional_Info")
 
             If Me.WriteFastaFile Then
-                ' Writing out a fasta file; no header to write
+                ' Writing out a FASTA file; no header to write
                 lstHeaderColumns = New List(Of String)
             Else
                 ' Writing a tab-delimited file
@@ -417,7 +419,7 @@ Public Class clsParseIPIDATFile
 
                         intRowsProcessed += 1
 
-                        If DateTime.UtcNow.Subtract(dtLastUpdate).totalseconds >= 1 Then
+                        If DateTime.UtcNow.Subtract(dtLastUpdate).TotalSeconds >= 1 Then
                             dtLastUpdate = DateTime.UtcNow
 
                             Dim percentComplete = bytesRead / CDbl(lngInputFileBytes) * 100
@@ -727,7 +729,7 @@ Public Class clsParseIPIDATFile
             additionalInfo = additionalInfo.Substring(1, additionalInfo.Length - 2)
         End If
 
-        If String.IsNullOrWhiteSpace(organismName) Then            
+        If String.IsNullOrWhiteSpace(organismName) Then
             organismName = UNKNOWN_ORGANISM
         End If
 
@@ -1004,8 +1006,8 @@ Public Class clsParseIPIDATFile
 
     End Sub
 
-    Private Function WriteDelimitedFileHeader(ByVal swOutFile As StreamWriter, _
-     ByVal lstAddnlColumns As SortedSet(Of String), _
+    Private Function WriteDelimitedFileHeader(ByVal swOutFile As StreamWriter,
+     ByVal lstAddnlColumns As SortedSet(Of String),
      ByVal dctAddnlColumnNameAndIndex As Dictionary(Of String, Integer)) As List(Of String)
 
         Dim intIndex As Integer
